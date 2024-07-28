@@ -1,0 +1,18 @@
+.slick-dots {
+    @apply left-0;
+    @apply !bottom-0;
+    @apply !w-auto;
+}
+
+.slick-dots li {
+    @apply !mr-6;
+    @apply !ml-0;
+}
+
+.slick-dots li button::before{
+    content: ""!important;
+    @apply bg-green;
+    @apply !w-7;
+    @apply rounded-xl;
+    @apply !h-3;
+}

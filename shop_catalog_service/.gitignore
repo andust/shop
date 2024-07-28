@@ -1,0 +1,10 @@
+.env
+app/api
+app/scripts
+app/tmp/
+
+db-data
+
+# misc
+.DS_Store
+*.pem
