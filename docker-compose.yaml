@@ -50,6 +50,7 @@ services:
       - ./shop_order_service/.env
     volumes:
       - ./shop_order_service/app/:/code/shop_order_service/
+      - /code/shop_order_service/node_modules
     ports:
       - "7008:7008"
 
