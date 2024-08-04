@@ -10,11 +10,6 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-type JWTResponse struct {
-	Access  string `json:"access"`
-	Refresh string `json:"refresh"`
-}
-
 func GenerateJWT(user model.User, exp time.Duration) (string, error) {
 	secretKey := os.Getenv("SECRET_KEY")
 	cleanSecretKey := strings.TrimSpace(secretKey)
@@ -30,23 +25,13 @@ func GenerateJWT(user model.User, exp time.Duration) (string, error) {
 		"iat":   time.Now().Unix(),
 	})
 
-	tokenString, err := claims.SignedString([]byte(os.Getenv("SECRET_KEY")))
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
+	return claims.SignedString([]byte(os.Getenv("SECRET_KEY")))
 }
 
 func VerifyToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		return []byte(os.Getenv("SECRET_KEY")), nil
 	})
-	if err != nil {
-		return token, err
-	}
-
-	return token, nil
 }
 
 func GetClaim(token *jwt.Token) (jwt.MapClaims, bool) {

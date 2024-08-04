@@ -44,6 +44,5 @@ func (u *User) HashPassword() (string, error) {
 }
 
 func (u *User) IsValidPassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
-	return err == nil
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) == nil
 }

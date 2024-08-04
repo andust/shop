@@ -37,6 +37,7 @@ type ApiError struct {
 }
 
 func msgForTag(fe validator.FieldError) string {
+	// TODO - more case statements
 	switch fe.Tag() {
 	case "required":
 		return "This field is required"
