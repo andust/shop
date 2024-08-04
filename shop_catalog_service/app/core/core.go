@@ -23,12 +23,9 @@ type Core struct {
 }
 
 func New() *Core {
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
 	return &Core{
-		InfoLog:  infoLog,
-		ErrorLog: errorLog,
+		InfoLog:  log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime),
+		ErrorLog: log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
 	}
 }
 
