@@ -1,16 +1,21 @@
 import { Children, ClassNameProp } from "../../types";
 
+interface ListItem {
+  id: string | number
+  item: Children
+}
+
 interface UnorderedListProps extends ClassNameProp {
-  listItem: Children[]
+  listItems: ListItem[]
 }
 
 export const UnorderedList = ({
   className = "",
-  listItem
+  listItems
 }: UnorderedListProps) => {
   return (
     <ul className={className}>
-      {listItem.map((li) => <li>{li}</li>) }
+      {listItems.map(({ id, item }) => <li key={id}>{item}</li>) }
     </ul>
   )
 }

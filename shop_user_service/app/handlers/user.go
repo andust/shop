@@ -18,34 +18,46 @@ func (h *Handler) UsersList(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-type LoginParams struct {
+type BaseAuthParams struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
 
 func (h *Handler) Login(c echo.Context) error {
-	lp := new(LoginParams)
-	if err := c.Bind(lp); err != nil {
+	ap := new(BaseAuthParams)
+	if err := c.Bind(ap); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	dv := NewValidator()
-	if err := dv.Validate(lp); err != nil {
+	if err := dv.Validate(ap); err != nil {
 		return err
 	}
 
-	loginUseCase := usecase.NewLogin(h.Core.ErrorLog, h.Core.Repository.UserRepository)
-	result, err := loginUseCase.Base(lp.Email, lp.Password)
+	loginUseCase := usecase.NewLogin(h.Core.ErrorLog, h.Core.Repository.UserRepository, h.Core.RedisClient)
+	result, err := loginUseCase.Base(ap.Email, ap.Password)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	c.SetCookie(newAccessCookie(result))
+
+	return c.JSON(http.StatusOK, nil)
 }
 
 func (h *Handler) Register(c echo.Context) error {
-	registerUseCase := usecase.NewRegister(h.Core.ErrorLog, h.Core.Repository.UserRepository)
-	result, err := registerUseCase.Base("andrzej@example.com", "mysecretpassword")
+	ap := new(BaseAuthParams)
+	if err := c.Bind(ap); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	dv := NewValidator()
+	if err := dv.Validate(ap); err != nil {
+		return err
+	}
+
+	registerUseCase := usecase.NewRegister(h.Core.ErrorLog, h.Core.Repository.UserRepository, h.Core.RedisClient)
+	result, err := registerUseCase.Base(ap.Email, ap.Password)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}

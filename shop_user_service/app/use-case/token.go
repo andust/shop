@@ -1,54 +1,61 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
-	"time"
 
+	"github.com/andust/shop_user_service/constants"
 	"github.com/andust/shop_user_service/repository"
 	"github.com/andust/shop_user_service/utils"
-	"github.com/golang-jwt/jwt"
+	"github.com/redis/go-redis/v9"
 )
 
 type token struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
+	RedisClient    *redis.Client
 }
 
-func NewToken(logger *log.Logger, userRepository repository.UserRepository) token {
-	return token{ErrorLog: logger, UserRepository: userRepository}
+func NewToken(logger *log.Logger, userRepository repository.UserRepository, redis *redis.Client) token {
+	return token{ErrorLog: logger, UserRepository: userRepository, RedisClient: redis}
 }
 
-func (t *token) Refres(refreshToken string) (*utils.JWTResponse, error) {
+func (t *token) Refres(accessToken string) (string, error) {
 	baseError := errors.New("refresh token error")
 
-	token, err := utils.VerifyToken(refreshToken)
+	// 1. get token struct and it's claim (need user id)
+	token, _ := utils.VerifyToken(accessToken)
+	claim, ok := utils.GetClaim(token)
+	if !ok {
+		return "", errors.New("get claim error")
+	}
+
+	// 2. pick and verify user refresh token
+	subId := fmt.Sprint(claim["subId"])
+	refreshToken, err := t.RedisClient.Get(context.Background(), subId).Result()
+	if err != nil {
+		return "", baseError
+	}
+
+	_, err = utils.VerifyToken(refreshToken)
+	if err != nil {
+		return "", baseError
+	}
+
+	// 3. If we don't have any error from verify refresh token then we generate new access token
+	user, err := t.UserRepository.FindOne(repository.UserQuery{ID: subId})
 	if err != nil {
 		t.ErrorLog.Println(err)
-		return nil, baseError
+		return "", baseError
 	}
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		sub := fmt.Sprint(claims["sub"])
-		subId := fmt.Sprint(claims["subId"])
-		user, err := t.UserRepository.FindOne(repository.UserQuery{ID: subId, Email: sub})
-		if err != nil {
-			t.ErrorLog.Println(err)
-			return nil, baseError
-		}
-
-		access, err := utils.GenerateJWT(*user, time.Minute*15)
-		if err != nil {
-			t.ErrorLog.Println(err)
-			return nil, baseError
-		}
-
-		return &utils.JWTResponse{
-			Access:  access,
-			Refresh: token.Raw,
-		}, nil
+	newAccessToken, err := utils.GenerateJWT(*user, constants.ACCESS_TOKEN_EXP)
+	if err != nil {
+		t.ErrorLog.Println(err)
+		return "", baseError
 	}
 
-	return nil, baseError
+	return newAccessToken, nil
 }

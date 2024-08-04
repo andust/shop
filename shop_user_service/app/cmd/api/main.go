@@ -20,7 +20,9 @@ func serve(c *core.Core) {
 
 	c.InitRepository(os.Getenv("DB_NAME"))
 	defer repository.CloseDB()
-	
+
+	c.InitRedisClient()
+
 	e := echo.New()
 	h := handlers.Handler{Core: c}
 	h.Routes(e)

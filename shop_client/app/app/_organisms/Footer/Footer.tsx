@@ -26,35 +26,35 @@ export default () => (
       <div>
         <Image src={logo} alt="logo" />
         <UnorderedList
-          listItem={["Track Order", "Delivery & Returns", "Warranty"]}
+          listItems={["Track Order", "Delivery & Returns", "Warranty"].map(item => ({ id: item, item}))}
         />
       </div>
       <div>
         <Headline level={4}>About Us</Headline>
         <UnorderedList
-          listItem={[
+          listItems={[
             "Rave’s Story",
             "Work With Us",
             "Coporate News",
             "Investors",
-          ]}
+          ].map(item => ({ id: item, item}))}
         />
       </div>
       <div>
         <Headline level={4}>Useful Links</Headline>
         <UnorderedList
-          listItem={[
+          listItems={[
             "Rave Story",
             "Work With Us",
             "Coporate News",
             "Investors",
-          ]}
+          ].map(item => ({ id: item, item}))}
         />
       </div>
       <div>
         <Headline level={4}>Contact Info</Headline>
         <UnorderedList
-          listItem={["Rave Story", "Work With Us", "Coporate News"]}
+          listItems={["Rave Story", "Work With Us", "Coporate News"].map(item => ({ id: item, item}))}
         />
       </div>
     </div>

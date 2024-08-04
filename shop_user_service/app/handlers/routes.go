@@ -20,10 +20,10 @@ func (h *Handler) Routes(e *echo.Echo) {
 	apiGroup.POST("/login", h.Login)
 	apiGroup.POST("/register", h.Register)
 
-	apiGroup.POST("/token/refresh", h.RefreshToken)
-	apiGroup.POST("/token/verify", h.VerifyToken)
+	apiGroup.GET("/token/verify", h.VerifyToken)
+	apiGroup.GET("/token/refresh", h.RefreshToken)
 
 	apiGroup.Use(middlewares.AuthMiddleware)
 
-	apiGroup.GET("/users", guard.AuthGuard(h.UsersList, []string{"admin", "super-admin"}))
+	apiGroup.GET("/users", guard.AdminAuthGuard(h.UsersList))
 }

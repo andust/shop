@@ -6,30 +6,36 @@ import (
 
 	model "github.com/andust/shop_user_service/models"
 	"github.com/andust/shop_user_service/repository"
+	"github.com/redis/go-redis/v9"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type register struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
+	RedisClient    *redis.Client
 }
 
-func NewRegister(logger *log.Logger, userRepository repository.UserRepository) register {
-	return register{ErrorLog: logger, UserRepository: userRepository}
+func NewRegister(logger *log.Logger, userRepository repository.UserRepository, redis *redis.Client) register {
+	return register{ErrorLog: logger, UserRepository: userRepository, RedisClient: redis}
 }
 
 func (r *register) Base(email, password string) (*model.User, error) {
 	dbUser, err := r.UserRepository.FindOne(repository.UserQuery{Email: email})
 	if err != nil {
-		r.ErrorLog.Println(err)
-		return nil, errors.New("unexpected error, please try again")
+		if err != mongo.ErrNoDocuments {
+			r.ErrorLog.Println(err)
+			return nil, errors.New("unexpected error, please try again")
+		}
 	}
-	if dbUser.ID != "" {
+	if dbUser != nil && dbUser.ID != "" {
 		return nil, errors.New("user exist")
 	}
 
 	user := model.User{
 		Email:    email,
 		Password: password,
+		Role:     model.ClientRole,
 	}
 	user.HashPassword()
 

@@ -43,12 +43,15 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 		return []byte(os.Getenv("SECRET_KEY")), nil
 	})
 	if err != nil {
-		return nil, err
-	}
-
-	if !token.Valid {
-		return nil, errors.New("invalid token")
+		return token, err
 	}
 
 	return token, nil
+}
+
+func GetClaim(token *jwt.Token) (jwt.MapClaims, bool) {
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		return claims, ok
+	}
+	return jwt.MapClaims{}, false
 }

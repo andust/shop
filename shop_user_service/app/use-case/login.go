@@ -1,47 +1,49 @@
 package usecase
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
-	"time"
 
+	"github.com/andust/shop_user_service/constants"
 	"github.com/andust/shop_user_service/repository"
 	"github.com/andust/shop_user_service/utils"
+	"github.com/redis/go-redis/v9"
 )
 
 type login struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
+	RedisClient    *redis.Client
 }
 
-func NewLogin(logger *log.Logger, userRepository repository.UserRepository) login {
-	return login{ErrorLog: logger, UserRepository: userRepository}
+func NewLogin(logger *log.Logger, userRepository repository.UserRepository, redis *redis.Client) login {
+	return login{ErrorLog: logger, UserRepository: userRepository, RedisClient: redis}
 }
 
-func (l *login) Base(email, password string) (*utils.JWTResponse, error) {
+func (l *login) Base(email, password string) (string, error) {
 	user, err := l.UserRepository.FindOne(repository.UserQuery{Email: email})
 	if err != nil {
 		l.ErrorLog.Println(err)
-		return nil, errors.New("unexpected error, please try again")
+		return "", errors.New("unexpected error, please try again")
 	}
 
 	if user.IsValidPassword(password) {
-		accessToken, err := utils.GenerateJWT(*user, time.Minute*15)
+		accessToken, err := utils.GenerateJWT(*user, constants.ACCESS_TOKEN_EXP)
 		if err != nil {
 			l.ErrorLog.Println("accessToken", err)
-			return nil, errors.New("unexpected error, please try again")
+			return "", errors.New("unexpected error, please try again")
 		}
-		refreshToken, err := utils.GenerateJWT(*user, time.Hour*24)
+		refreshToken, err := utils.GenerateJWT(*user, constants.REFRESH_TOKEN_EXP)
 		if err != nil {
 			l.ErrorLog.Println("refreshToken", err)
-			return nil, errors.New("unexpected error, please try again")
+			return "", errors.New("unexpected error, please try again")
 		}
-		return &utils.JWTResponse{
-			Access:  accessToken,
-			Refresh: refreshToken,
-		}, nil
+		l.RedisClient.Set(context.Background(), user.ID, refreshToken, constants.REFRESH_TOKEN_EXP)
+
+		return accessToken, nil
 	}
 
-	return nil, fmt.Errorf("login user error, please try again")
+	return "", fmt.Errorf("login user error, please try again")
 }

@@ -8,36 +8,33 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type accessToken struct {
-	Access string `json:"access"`
-}
-
-type refreshToken struct {
-	Refresh string `json:"refresh"`
-}
-
 func (h *Handler) RefreshToken(c echo.Context) error {
-	rt := new(refreshToken)
-	c.Bind(rt)
+	accessCookie, err := c.Cookie("access")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, nil)
+	}
 
-	tokenUseCase := usecase.NewToken(h.Core.ErrorLog, h.Core.Repository.UserRepository)
-	result, err := tokenUseCase.Refres(rt.Refresh)
+	tokenUseCase := usecase.NewToken(h.Core.ErrorLog, h.Core.Repository.UserRepository, h.Core.RedisClient)
+	result, err := tokenUseCase.Refres(accessCookie.Value)
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
 		return echo.NewHTTPError(http.StatusUnauthorized, nil)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	c.SetCookie(newAccessCookie(result))
+	return c.JSON(http.StatusOK, nil)
 }
 
 func (h *Handler) VerifyToken(c echo.Context) error {
-	at := new(accessToken)
-	c.Bind(at)
-	_, err := utils.VerifyToken(at.Access)
+	accessCookie, err := c.Cookie("access")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "no token to verify")
+	}
+	_, err = utils.VerifyToken(accessCookie.Value)
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, err)
+		return echo.NewHTTPError(http.StatusUnauthorized, "verify token error")
 	}
 
-	return c.JSON(http.StatusOK, "ok")
+	return c.JSON(http.StatusOK, nil)
 }

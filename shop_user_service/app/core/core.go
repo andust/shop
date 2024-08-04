@@ -2,11 +2,13 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
 
 	"github.com/andust/shop_user_service/repository"
+	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -19,9 +21,10 @@ import (
 var counts int8
 
 type Core struct {
-	InfoLog    *log.Logger
-	ErrorLog   *log.Logger
-	Repository repository.Repository
+	InfoLog     *log.Logger
+	ErrorLog    *log.Logger
+	Repository  repository.Repository
+	RedisClient *redis.Client
 }
 
 func New() *Core {
@@ -33,27 +36,28 @@ func New() *Core {
 		ErrorLog: errorLog,
 	}
 }
-func (c *Core) initDB(db string) (error, *mongo.Client) {
+
+func (c *Core) initDB(db string) (*mongo.Client, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(db))
 
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	err = client.Ping(ctx, nil)
 
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
-	return nil, client
+	return client, nil
 }
 
 func (c *Core) InitRepository(databaseName string) error {
-	err, client := c.initDB(
+	client, err := c.initDB(
 		os.Getenv("SUS_DB"),
 	)
 	if err != nil {
@@ -63,4 +67,19 @@ func (c *Core) InitRepository(databaseName string) error {
 	c.Repository = *repository.New(client, databaseName)
 
 	return nil
+}
+
+func (c *Core) InitRedisClient() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
+		Password: os.Getenv("REDIS_PASS"),
+		DB:       0,
+	})
+
+	_, err := client.Ping(context.Background()).Result()
+	if err != nil {
+		c.ErrorLog.Fatalf("redis connection problem %v", err)
+	}
+
+	c.RedisClient = client
 }

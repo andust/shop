@@ -96,3 +96,13 @@ services:
       DB_PASSWORD: password
     volumes:
       - ./db-data/mongo/:/data/db
+
+  shop_redis:
+    container_name: shop_redis
+    hostname: shop_redis
+    image: redis:7.4
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass q2sGPHduXqKHSsYlz59FF9i7hc8VUraQ
+    volumes:
+      - ./cache:/data

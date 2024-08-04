@@ -33,27 +33,27 @@ func New() *Core {
 		ErrorLog: errorLog,
 	}
 }
-func (c *Core) initDB(db string) (error, *mongo.Client) {
+func (c *Core) initDB(db string) (*mongo.Client, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(db))
 
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	err = client.Ping(ctx, nil)
 
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
-	return nil, client
+	return client, nil
 }
 
 func (c *Core) InitRepository(databaseName string) error {
-	err, client := c.initDB(
+	client, err := c.initDB(
 		os.Getenv("SBS_DB"),
 	)
 	if err != nil {
