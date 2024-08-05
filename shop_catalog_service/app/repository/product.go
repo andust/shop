@@ -12,9 +12,11 @@ import (
 type productRepository struct{}
 
 type ProductFilter struct {
-	ID    string
-	Limit int
-	Page  int
+	ID          string
+	Limit       int
+	Page        int
+	ProductName string
+	CategoryID  string
 }
 
 type ProductFilterResult struct {
@@ -28,6 +30,16 @@ func (p *ProductFilter) FilterQuery(query *[]string, args map[string]any) {
 	if p.ID != "" {
 		where = append(where, "p.id = :id")
 		args["id"] = p.ID
+	}
+
+	if p.CategoryID != "" {
+		where = append(where, "p.category_id = :category_id")
+		args["category_id"] = p.CategoryID
+	}
+
+	if p.ProductName != "" {
+		where = append(where, "LOWER(p.name) LIKE :product_name")
+		args["product_name"] = "%" + strings.ToLower(p.ProductName) + "%"
 	}
 
 	if len(where) > 0 {
@@ -100,7 +112,6 @@ func (p *productRepository) Filter(filter Filter) (ProductFilterResult, error) {
 
 	filter.FilterQuery(&query, args)
 	filter.FilterQuery(&paginationQuery, paginationArgs)
-
 	//2. count resultes for pagination
 	stmt, err := db.PrepareNamed(strings.Join(paginationQuery, "\n"))
 	if err != nil {
@@ -121,7 +132,6 @@ func (p *productRepository) Filter(filter Filter) (ProductFilterResult, error) {
 
 	//4. limit and offset results
 	pagesQty := filter.LimitOffsetQuery(&query, args, allResultCount)
-
 	rows, err := db.NamedQuery(strings.Join(query, "\n"), args)
 	if err != nil {
 		return ProductFilterResult{}, err

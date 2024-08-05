@@ -11,9 +11,14 @@ import (
 func (h *Handler) ProductList(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("p"))
 	limit, _ := strconv.Atoi(c.QueryParam("l"))
+	category := c.QueryParam("category")
+	product := c.QueryParam("product")
+
 	result, err := h.Core.Repository.Product.Filter(&repository.ProductFilter{
-		Limit: limit,
-		Page:  page,
+		Limit:       limit,
+		Page:        page,
+		ProductName: product,
+		CategoryID:  category,
 	})
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
