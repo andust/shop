@@ -13,10 +13,11 @@ type productRepository struct{}
 
 type ProductFilter struct {
 	ID          string
+	IDs         []string
 	Limit       int
 	Page        int
 	ProductName string
-	CategoryID  string
+	CategoryIDs []string
 }
 
 type ProductFilterResult struct {
@@ -32,9 +33,8 @@ func (p *ProductFilter) FilterQuery(query *[]string, args map[string]any) {
 		args["id"] = p.ID
 	}
 
-	if p.CategoryID != "" {
-		where = append(where, "p.category_id = :category_id")
-		args["category_id"] = p.CategoryID
+	if inQueryResult := InStringQuery(p.CategoryIDs, "category_id", args); inQueryResult != "" {
+		where = append(where, fmt.Sprintf("p.category_id %s", inQueryResult))
 	}
 
 	if p.ProductName != "" {

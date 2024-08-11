@@ -2,23 +2,45 @@
 import Select from "react-select";
 
 import Button from "../../_atoms/Button/Button";
+import { FormEventHandler, useState } from "react";
 
-interface Props {
-  options: { value: string; label: string }[];
+interface Option {
+  value: string; label: string
 }
 
-export default function ProductByCategorySearchForm({ options }: Props) {
+interface Props {
+  options: Option[];
+  onSubmitHandler: FormEventHandler<HTMLFormElement>;
+  searchDefaultValue?: string;
+  selectDefaultValue?: string;
+}
+
+export default ({
+  options,
+  onSubmitHandler,
+  searchDefaultValue = "",
+  selectDefaultValue = "",
+}: Props) => {
+  const [selectValue, setSelectValue] = useState<string>(selectDefaultValue);  
   return (
-    <div className="flex">
+    <form className="flex" onSubmit={onSubmitHandler}>
       <div className="flex items-center border rounded-l-md pl-3">
         <input
-          className="rounded-md text-sm w-48"
+          className="rounded-md text-sm w-48 focus:outline-none"
           placeholder="Search Product..."
+          name="product"
+          defaultValue={searchDefaultValue}
         />
         <div className="h-2/4 w-[1px] bg-slate-300 mr-1"></div>
         <Select
           placeholder="All categories"
           options={options}
+          name="category"
+          value={options.find(({ value }) => {
+            
+            return value === selectValue
+          })}
+          onChange={(newValue) => {setSelectValue(newValue?.label ?? "")}}
           classNames={{
             control: () => "w-56",
           }}
@@ -35,9 +57,9 @@ export default function ProductByCategorySearchForm({ options }: Props) {
           }}
         />
       </div>
-      <Button className="bg-green text-white p-2 px-3 rounded-r-md">
+      <Button type="submit" className="bg-green text-white p-2 px-3 rounded-r-md">
         Search
       </Button>
-    </div>
+    </form>
   );
 }

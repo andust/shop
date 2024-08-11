@@ -31,8 +31,15 @@ func main() {
 }
 
 func RegisterScript() map[string]func(c *core.Core, args ...string) {
-	return map[string]func(c *core.Core, args ...string){
-		"migrate-up":       migrate.MigrateUp,
-		"migrate-dev-data": migrate.MigrateDevData,
+	scripts := make(map[string]func(c *core.Core, args ...string))
+
+	// development scripts
+	if os.Getenv("ENV") == "development" {
+		scripts["migrate-dev-data"] = migrate.MigrateDevData
 	}
+
+	// all env scripts
+	scripts["migrate-up"] = migrate.MigrateUp
+
+	return scripts
 }

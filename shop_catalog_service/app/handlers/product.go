@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/andust/shop_catalog_service/repository"
 	"github.com/labstack/echo/v4"
@@ -11,15 +13,16 @@ import (
 func (h *Handler) ProductList(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("p"))
 	limit, _ := strconv.Atoi(c.QueryParam("l"))
-	category := c.QueryParam("category")
+	categories := strings.Split(c.QueryParam("categories"), ",")
 	product := c.QueryParam("product")
 
 	result, err := h.Core.Repository.Product.Filter(&repository.ProductFilter{
 		Limit:       limit,
 		Page:        page,
 		ProductName: product,
-		CategoryID:  category,
+		CategoryIDs: categories,
 	})
+
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
 		echo.NewHTTPError(http.StatusBadRequest, "get product list error")

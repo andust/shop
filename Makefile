@@ -28,6 +28,10 @@ catalog-migrate-up:
 catalog-migrate-down:
 	docker compose exec ${CATALOG_SERVICE_NAME} migrate -path $(migration_dir) -database $(CATALOG_DATABASE) -verbose down
 
+catalog-build-scripts:
+	docker compose exec ${CATALOG_SERVICE_NAME} env GOOS=linux CGO_ENABLED=0 go build -o scripts cmd/scripts/main.go 
+
+
 # USER SERVICE
 user-build-api:
 	docker compose exec ${USER_SERVICE_NAME} env GOOS=linux CGO_ENABLED=0 go build -o api cmd/api/main.go 

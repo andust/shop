@@ -174,9 +174,7 @@ export default async function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-4 gap-4">
-              {products.map((p) => (
-                <ProductBaseDisplay product={p} />
-              ))}
+              {products.map((p) => <ProductBaseDisplay product={p} />)}
             </div>
           </div>
         </section>

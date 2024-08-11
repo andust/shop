@@ -1,7 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Select, { components } from "react-select";
 
@@ -10,15 +11,14 @@ import { SLIDE_EFFECT_CLASSES } from "../../_constants/style";
 import { Category } from "../../_models/category";
 
 import cardIcon from "../../_assets/img/card.svg";
-import heartIcon from "../../_assets/img/heart.svg";
 import headerUserIcon from "../../_assets/img/header-user.svg";
 import logo from "../../_assets/img/logo.webp";
-import phoneIcon from "../../_assets/img/phone.svg";
-import reloadIcon from "../../_assets/img/reload.svg";
 
 import "./header.css";
 
 export default function Header() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   useEffect(() => {
     fetch("http://localhost:7007/api/v1/categories")
@@ -38,6 +38,18 @@ export default function Header() {
     icon,
   }));
 
+  const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = Array.from(formData.entries())
+      .map(([k, v]) => [k, v.toString().trim()])
+      .filter(([_, v]) => v) as string[][];
+    const queryString = new URLSearchParams(data).toString();
+    if (queryString) {
+      router.push(`/products?${queryString}`);
+    }
+  };
+
   return (
     <header>
       <div className="bg-light-green border-b border-light-green py-3">
@@ -49,13 +61,7 @@ export default function Header() {
           </nav>
           <div className="divide-x">
             <span className="pr-3">
-              <Image
-                priority
-                src={phoneIcon}
-                alt="phone"
-                className="inline mr-2"
-              />
-              + 00645 4568
+              <i className="icon-phone1 text-green pr-1"></i>+ 00645 4568
             </span>
             <span className="pl-3">Youremai@gmail.com</span>
           </div>
@@ -63,10 +69,15 @@ export default function Header() {
       </div>
       <div className="container flex justify-between py-5">
         <Image src={logo} alt="Logo" className="h-[33px]" />
-        <ProductByCategorySearchForm options={options} />
+        <ProductByCategorySearchForm
+          options={options}
+          onSubmitHandler={onSubmitHandler}
+          searchDefaultValue={searchParams.get("product") ?? undefined}
+          selectDefaultValue={searchParams.get("category") ?? undefined}
+        />
         <div className="flex items-center gap-x-4">
-          <Image src={reloadIcon} alt="Reload" />
-          <Image src={heartIcon} alt="Heart" />
+          <i className="icon-spinner9"></i>
+          <i className="icon-heart"></i>
           <Image src={cardIcon} alt="Card" />
           <Image src={headerUserIcon} alt="User" />
         </div>
@@ -94,7 +105,7 @@ export default function Header() {
               components={{
                 IndicatorSeparator: () => null,
                 DropdownIndicator: () => (
-                  <span className="icon-arrow-down text-icon-xs"></span>
+                  <span className="icon-arrow-down2 text-sm"></span>
                 ),
                 Control: ({ children, ...rest }) => (
                   <components.Control {...rest}>
@@ -102,23 +113,18 @@ export default function Header() {
                   </components.Control>
                 ),
                 Option: (props) => {
-                  console.log(props);
-
                   return (
                     <div
                       {...props.innerProps}
                       className="flex items-center justify-between hover:bg-green hover:text-white hover:fill-white"
                     >
                       <div className="flex items-center ">
-                        <span
-                          className="w-4 m-3"
-                          dangerouslySetInnerHTML={{ __html: props.data.icon }}
-                        />{" "}
+                        <span className={`w-4 m-3 ${props.data.icon}`} />{" "}
                         <span className="group-hover:color-green">
                           {props.data.label}
                         </span>
                       </div>
-                      <span className="icon-arrow-right text-xs right mr-3"></span>
+                      <span className="icon-arrow-right2 text-xs right mr-3"></span>
                     </div>
                   );
                 },

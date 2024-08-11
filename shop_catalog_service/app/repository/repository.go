@@ -1,18 +1,23 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/jmoiron/sqlx"
+)
 
 var db *sqlx.DB
 
 type Repository struct {
-	Product productRepository
+	Product  productRepository
 	Category categoryRepository
 }
 
 func New(dbWrapper *sqlx.DB) Repository {
 	db = dbWrapper
 	return Repository{
-		Product: productRepository{},
+		Product:  productRepository{},
 		Category: categoryRepository{},
 	}
 }
@@ -37,4 +42,24 @@ type Filter interface {
 	LimitOffsetQuery(*[]string, map[string]any, int) int
 	GetLimit() int
 	GetPage() int
+}
+
+func InStringQuery(params []string, columnName string, args map[string]any) string {
+	result := ""
+
+	if len(params) > 0 {
+		for i, v := range params {
+			if v != "" {
+				queryKey := fmt.Sprintf("%s%v", columnName, i)
+				result += fmt.Sprintf(":%s, ", queryKey)
+				args[queryKey] = v
+			}
+		}
+		result = strings.TrimSuffix(result, ", ")
+		if result != "" {
+			result = fmt.Sprintf("IN (%s)", result)
+		}
+	}
+
+	return result
 }

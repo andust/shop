@@ -4,6 +4,7 @@ import { Product } from "../../_models/product";
 
 import Button from "../../_atoms/Button/Button";
 import pImg1 from "../../_assets/img/p-img-1.webp";
+import Link from "next/link";
 
 const ProductBaseDisplay = ({ product }: { product: Product }) => (
   <div
@@ -19,7 +20,9 @@ const ProductBaseDisplay = ({ product }: { product: Product }) => (
         <i className="icon-star-full"></i>
         <i className="icon-star-empty"></i>
       </div>
-      <h3 className="text-xl font-bold mb-3">{product.name}</h3>
+      <Link href={`/products/${product.id}`}>
+        <h3 className="text-xl font-bold mb-3">{product.name}</h3>
+      </Link>
       <div className="text-lg font-semibold mb-2">
         <span className="text-slate-600 line-through mr-3">$12.99</span>
         <span className="text-red">$6.99</span>
