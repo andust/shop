@@ -86,6 +86,11 @@ func (p *productRepository) Filter(filter Filter) (ProductFilterResult, error) {
 		-- Product
 		p.id,
 		p.name,
+		p.description,
+		p.created_at,
+		p.updated_at,
+		p.price,
+		p.quantity_in_stock,
 
 		-- Category
 		p.category_id,
@@ -143,6 +148,11 @@ func (p *productRepository) Filter(filter Filter) (ProductFilterResult, error) {
 		err := rows.Scan(
 			&product.ID,
 			&product.Name,
+			&product.Description,
+			&product.CreatedAt,
+			&product.UpdatedAt,
+			&product.Price,
+			&product.QuantityInStock,
 
 			// Cateogry
 			&categorySql.ID,

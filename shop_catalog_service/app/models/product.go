@@ -16,5 +16,5 @@ type Product struct {
 	UpdatedAt        time.Time `json:"updatedAt"`
 	SKU              string    `json:"sku"`
 	Brand            Brand     `json:"brand"`
-	Category         Category  `json:"categories"`
+	Category         Category  `json:"category"`
 }

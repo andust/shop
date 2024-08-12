@@ -19,6 +19,8 @@ services:
     build: ./shop_catalog_service
     command: >
       sh -c "go install github.com/air-verse/air@v1.52.2 &&
+            ./scripts migrate-up &&
+            ./scripts migrate-dev-data &&
              air"
     env_file:
       - ./shop_catalog_service/.env

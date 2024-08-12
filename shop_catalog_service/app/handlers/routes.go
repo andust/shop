@@ -15,6 +15,8 @@ func (h *Handler) Routes(e *echo.Echo) {
 
 	apiGroup := e.Group("/api/v1")
 
+	apiGroup.GET("/home", h.HomePage)
+
 	apiGroup.GET("/products", h.ProductList)
 
 	apiGroup.GET("/categories", h.CategoryList)
