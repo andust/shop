@@ -2,6 +2,7 @@ package migrate
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 
@@ -23,9 +24,10 @@ func MigrateUp(c *core.Core, args ...string) {
 	err = m.Up()
 	if err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {
-			c.InfoLog.Fatalln(err)
+			fmt.Println(err)
+		} else {
+			c.ErrorLog.Fatalln(err)
 		}
-		c.ErrorLog.Fatalln(err)
 	}
 	c.InfoLog.Println("migration completed successfully")
 }
