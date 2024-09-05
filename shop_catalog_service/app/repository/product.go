@@ -25,6 +25,14 @@ type ProductFilterResult struct {
 	Paginator
 }
 
+func (p *ProductFilterResult) First() *model.Product {
+	if l := len(p.Results); l > 0 {
+		return &p.Results[0]
+	}
+
+	return nil
+}
+
 func (p *ProductFilter) FilterQuery(query *[]string, args map[string]any) {
 	where := []string{}
 
@@ -90,6 +98,7 @@ func (p *productRepository) Filter(filter Filter) (ProductFilterResult, error) {
 		p.created_at,
 		p.updated_at,
 		p.price,
+		p.discount_price,
 		p.quantity_in_stock,
 
 		-- Category
@@ -152,6 +161,7 @@ func (p *productRepository) Filter(filter Filter) (ProductFilterResult, error) {
 			&product.CreatedAt,
 			&product.UpdatedAt,
 			&product.Price,
+			&product.DiscountPrice,
 			&product.QuantityInStock,
 
 			// Cateogry

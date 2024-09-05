@@ -23,6 +23,7 @@ CREATE TABLE Products (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
+    discount_price DECIMAL(10, 2) DEFAULT NULL,
     quantity_in_stock INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

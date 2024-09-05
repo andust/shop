@@ -1,10 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { Product } from "../../_models/product";
 
-import Button from "../../_atoms/Button/Button";
+import Button from "../../_atoms/button/Button";
 import pImg1 from "../../_assets/img/p-img-1.webp";
-import Link from "next/link";
 
 const ProductBaseDisplay = ({ product }: { product: Product }) => (
   <div

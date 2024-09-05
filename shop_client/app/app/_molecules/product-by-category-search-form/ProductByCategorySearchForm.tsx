@@ -1,7 +1,7 @@
 "use client";
 import Select from "react-select";
 
-import Button from "../../_atoms/Button/Button";
+import Button from "../../_atoms/button/Button";
 import { FormEventHandler, useState } from "react";
 
 interface Option {

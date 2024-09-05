@@ -108,3 +108,34 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass q2sGPHduXqKHSsYlz59FF9i7hc8VUraQ
     volumes:
       - ./cache:/data
+
+  nats:
+    image: nats
+    ports:
+      - "8222:8222"
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --http_port 8222 "
+  nats-1:
+    image: nats
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --routes=nats://ruser:T0pS3cr3t@nats:6222"
+    depends_on: ["nats"]
+  nats-2:
+    image: nats
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --routes=nats://ruser:T0pS3cr3t@nats:6222"
+    depends_on: ["nats"]
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: root
+      GF_SECURITY_ADMIN_PASSWORD: password
+    ports:
+     - '3000:3000'

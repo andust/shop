@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import FadeWrapper from "./_atoms/FadeWrapper/FadeWrapper";
-import HeroServices from "./_molecules/HeroServices/HeroServices";
-import ProductBaseDisplay from "./_molecules/ProductBaseDisplay/ProductBaseDisplay";
-import Slider from "./_organisms/Slider/Slider";
+import FadeWrapper from "./_atoms/fade-wrapper/FadeWrapper";
+import HeroServices from "./_molecules/hero-services/HeroServices";
+import ProductBaseDisplay from "./_molecules/product-base-display/ProductBaseDisplay";
+import Slider from "./_organisms/slider/Slider";
 
 import { FilterResponse } from "./types";
 import { SLIDE_EFFECT_CLASSES } from "./_constants/style";

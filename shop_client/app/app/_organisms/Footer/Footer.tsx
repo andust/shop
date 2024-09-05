@@ -1,8 +1,8 @@
 import Image from "next/image";
 
-import Headline from "../../_atoms/Headline/Headline";
-import { UnorderedList } from "../../_atoms/List/List";
-import DiscountCouponForm from "../../_molecules/DiscountCouponForm/DiscountCouponForm";
+import Headline from "../../_atoms/headline/Headline";
+import { UnorderedList } from "../../_atoms/list/List";
+import DiscountCouponForm from "../../_molecules/discount-coupon-form/DiscountCouponForm";
 
 import logo from "../../_assets/img/logo.webp";
 

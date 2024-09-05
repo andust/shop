@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import Select, { components } from "react-select";
 
-import ProductByCategorySearchForm from "../../_molecules/ProductByCategorySearchForm/ProductByCategorySearchForm";
+import ProductByCategorySearchForm from "../../_molecules/product-by-category-search-form/ProductByCategorySearchForm";
 import { SLIDE_EFFECT_CLASSES } from "../../_constants/style";
 import { Category } from "../../_models/category";
 

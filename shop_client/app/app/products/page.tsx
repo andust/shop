@@ -1,5 +1,5 @@
 import { Product } from "../_models/product";
-import ProductBaseDisplay from "../_molecules/ProductBaseDisplay/ProductBaseDisplay";
+import ProductBaseDisplay from "../_molecules/product-base-display/ProductBaseDisplay";
 
 import { FilterResponse } from "../types";
 

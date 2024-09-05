@@ -1,4 +1,4 @@
-import Button from "../../_atoms/Button/Button";
+import Button from "../../_atoms/button/Button";
 
 export default () => {
   return (
