@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/andust/shop_basket_service/repository"
+	"github.com/andust/shop_order_service/repository"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 

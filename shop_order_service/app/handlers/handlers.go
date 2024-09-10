@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/andust/shop_basket_service/core"
+	"github.com/andust/shop_order_service/core"
 )
 
 type Handler struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	model "github.com/andust/shop_basket_service/models"
+	model "github.com/andust/shop_order_service/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

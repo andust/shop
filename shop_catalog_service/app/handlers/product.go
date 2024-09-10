@@ -33,6 +33,7 @@ func (h *Handler) ProductList(c echo.Context) error {
 		h.Core.ErrorLog.Println(err)
 		echo.NewHTTPError(http.StatusBadRequest, "get product list error")
 	}
+
 	return c.JSON(http.StatusOK, result)
 }
 

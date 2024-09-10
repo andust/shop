@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/andust/shop_basket_service/repository"
+	"github.com/andust/shop_order_service/repository"
 	"github.com/labstack/echo/v4"
 )
 

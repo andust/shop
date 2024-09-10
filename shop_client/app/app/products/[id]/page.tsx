@@ -1,5 +1,6 @@
 import Button from "../../_atoms/button/Button";
 import { Product } from "../../_models/product";
+import ProductAddToCardForm from "../../_molecules/add-to-card-product-form/ProductAddToCardForm";
 
 export default async ({ params }: { params: { id: string } }) => {
   // const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -69,15 +70,7 @@ export default async ({ params }: { params: { id: string } }) => {
                 {product.quantityInStock} Products Available
               </span>
             </p>
-            <form className="flex space-x-3 justify-between ">
-              <div className="border flex rounded">
-                <Button className="p-3">-</Button>
-                <input placeholder="1" className="w-[50px] text-center" />
-                <Button className="p-3">+</Button>
-              </div>
-              <Button className="border rounded w-[50px]"><i className="icon-heart" /></Button>
-              <Button className="flex-1 rounded bg-green text-white font-semibold" type="submit">+ Add to Cart</Button>
-            </form>
+            <ProductAddToCardForm />
           </div>
         </div>
       </section>

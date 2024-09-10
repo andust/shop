@@ -104,7 +104,6 @@ func NewFakeUserRepository() fakeUserRepository {
 }
 
 func (f fakeUserRepository) FindOne(q UserQuery) (*model.User, error) {
-
 	var user model.User
 
 	return &user, nil

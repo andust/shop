@@ -1,4 +1,4 @@
-module github.com/andust/shop_basket_service
+module github.com/andust/shop_order_service
 
 go 1.22.3
 

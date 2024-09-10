@@ -1,1 +1,8 @@
-app/node_modules
+.env
+app/api
+app/scripts
+app/tmp/
+
+# misc
+.DS_Store
+*.pem

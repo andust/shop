@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/andust/shop_basket_service/core"
-	"github.com/andust/shop_basket_service/handlers"
+	"github.com/andust/shop_order_service/core"
+	"github.com/andust/shop_order_service/handlers"
 	"github.com/labstack/echo/v4"
 )
 

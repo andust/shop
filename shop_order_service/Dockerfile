@@ -1,11 +1,9 @@
-FROM node:22-alpine
+FROM golang:1.22-alpine
 
 WORKDIR /code/shop_order_service
 
-COPY app/package*.json ./
+COPY ./app .
 
-RUN npm install
+RUN go mod download
 
-COPY app/ .
-
-CMD ["npm", "run", "start"]
+CMD [ "api" ]

@@ -15,13 +15,13 @@ interface Props {
   selectDefaultValue?: string;
 }
 
-export default ({
+const ProductByCategorySearchForm = ({
   options,
   onSubmitHandler,
   searchDefaultValue = "",
   selectDefaultValue = "",
 }: Props) => {
-  const [selectValue, setSelectValue] = useState<string>(selectDefaultValue);  
+  const [selectValue, setSelectValue] = useState<string>(selectDefaultValue);
   return (
     <form className="flex" onSubmit={onSubmitHandler}>
       <div className="flex items-center border rounded-l-md pl-3">
@@ -35,12 +35,12 @@ export default ({
         <Select
           placeholder="All categories"
           options={options}
-          name="category"
+          name="categories"
           value={options.find(({ value }) => {
-            
+
             return value === selectValue
           })}
-          onChange={(newValue) => {setSelectValue(newValue?.label ?? "")}}
+          onChange={(newValue) => { setSelectValue(newValue?.label ?? "") }}
           classNames={{
             control: () => "w-56",
           }}
@@ -63,3 +63,5 @@ export default ({
     </form>
   );
 }
+
+export default ProductByCategorySearchForm;
