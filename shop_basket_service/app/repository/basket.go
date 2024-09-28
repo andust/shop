@@ -2,17 +2,20 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
-	model "github.com/andust/shop_order_service/models"
+	"github.com/andust/shop_basket_service/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type BasketRepository interface {
-	FindOne(q BasketQuery) (*model.Basket, error)
-	InsertOne() (*model.Basket, error)
+	Get(q BasketQuery) (*model.Basket, error)
+	Create(basket *model.Basket) (*model.Basket, error)
+	InsertProdct(product model.Product) (*model.Basket, error)
 }
 
 type basketRepository struct {
@@ -26,7 +29,8 @@ func NewBasketRepository(collection *mongo.Collection) basketRepository {
 }
 
 type BasketQuery struct {
-	ID string
+	ID     string
+	UserId string
 	Options
 }
 
@@ -45,28 +49,48 @@ func (b BasketQuery) Filter() bson.D {
 	return filter
 }
 
-func (b basketRepository) FindOne(q BasketQuery) (*model.Basket, error) {
+func (b basketRepository) Get(q BasketQuery) (*model.Basket, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DB_TIMEOUT)
 	defer cancel()
 
-	var basket model.Basket
+	var basket *model.Basket
 
 	filter := q.Filter()
 	opts := q.OneEntryOptions()
 	err := b.collection.FindOne(ctx, filter, opts).Decode(&basket)
+	if err != nil && err != mongo.ErrNilDocument {
+		return nil, err
+	}
+
+	if basket == nil {
+		fmt.Println("pusty")
+	}
+
+	return basket, nil
+}
+
+func (b basketRepository) Create(basket *model.Basket) (*model.Basket, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), DB_TIMEOUT)
+	defer cancel()
+
+	ddd, err := b.collection.InsertOne(ctx, basket, &options.InsertOneOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	return &basket, nil
+	fmt.Println(ddd.InsertedID)
+	fmt.Println(basket)
+
+	return basket, nil
 }
 
-func (b basketRepository) InsertOne() (*model.Basket, error) {
+func (b basketRepository) InsertProdct(product model.Product) (*model.Basket, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DB_TIMEOUT)
 	defer cancel()
 
 	basket := model.Basket{
 		CreatedAt: time.Now(),
+		Products:  []model.Product{product},
 	}
 	insertedResult, err := b.collection.InsertOne(ctx, basket)
 	if err != nil {

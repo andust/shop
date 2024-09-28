@@ -1,6 +1,7 @@
 import Button from "../../_atoms/button/Button";
 import { Product } from "../../_models/product";
 import ProductAddToCardForm from "../../_molecules/add-to-card-product-form/ProductAddToCardForm";
+import ProductPrice from "../../_molecules/product-base-display/ProductPrice";
 
 export default async ({ params }: { params: { id: string } }) => {
   // const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,18 +52,8 @@ export default async ({ params }: { params: { id: string } }) => {
               <i className="icon-star-empty" />
               <i className="icon-star-empty" /> 0 Reviews
             </p>
-            <p className="text-xl font-semibold mb-4">
-              {product.discountPrice ? (
-                <>
-                  <span className="text-slate-700 line-through mr-1">
-                    ${product.price}
-                  </span>
-                  <span className="text-red">${product.discountPrice}</span>
-                </>
-              ) : (
-                <span>${product.price}</span>
-              )}
-            </p>
+            <ProductPrice product={product} />
+
             <p className="mb-8">{product.description}</p>
             <p className="bg-slate-100 p-2 rounded-lg font-semibold mb-8 inline-block">
               Availabillity :{" "}
@@ -70,7 +61,7 @@ export default async ({ params }: { params: { id: string } }) => {
                 {product.quantityInStock} Products Available
               </span>
             </p>
-            <ProductAddToCardForm />
+            <ProductAddToCardForm productId={product.id} />
           </div>
         </div>
       </section>

@@ -145,11 +145,9 @@ export default function Header() {
               </ul>
             </nav>
           </div>
-          <a
-            className={`py-4 px-7 bg-orange font-bold text-black ${SLIDE_EFFECT_CLASSES}`}
-          >
+          <Link className={`py-4 px-7 bg-orange font-bold text-black ${SLIDE_EFFECT_CLASSES}`} href="/auth/login">
             Seller Login
-          </a>
+          </Link>
         </div>
       </div>
     </header>

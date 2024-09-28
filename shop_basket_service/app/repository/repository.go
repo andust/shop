@@ -10,7 +10,9 @@ const DB_TIMEOUT = time.Second * 3
 
 var db *mongo.Client
 
-type Repository struct{}
+type Repository struct {
+	BasketRepository BasketRepository
+}
 
 func collection(databaseName string, collectionName string) *mongo.Collection {
 	return db.Database(databaseName).Collection(collectionName)
@@ -19,5 +21,7 @@ func collection(databaseName string, collectionName string) *mongo.Collection {
 func New(client *mongo.Client, databaseName string) *Repository {
 	db = client
 
-	return &Repository{}
+	return &Repository{
+		BasketRepository: NewBasketRepository(collection(databaseName, "basket")),
+	}
 }

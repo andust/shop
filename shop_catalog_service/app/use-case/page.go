@@ -7,11 +7,11 @@ import (
 )
 
 type page struct {
-	Repository repository.Repository
+	Repository *repository.Repository
 }
 
-func NewPage() *page {
-	return &page{}
+func NewPage(repository *repository.Repository) *page {
+	return &page{Repository: repository}
 }
 
 func (p *page) HomePageData() ([]model.Product, error) {

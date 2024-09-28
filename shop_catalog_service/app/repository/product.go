@@ -9,6 +9,10 @@ import (
 	model "github.com/andust/shop_catalog_service/models"
 )
 
+type ProductRepository interface {
+	Filter(filter Filter) (ProductFilterResult, error)
+}
+
 type productRepository struct{}
 
 type ProductFilter struct {

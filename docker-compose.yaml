@@ -40,6 +40,21 @@ services:
     ports:
       - 5432:5432
 
+  shop_user_service:
+    container_name: shop_user_service
+    hostname: shop_user_service
+    image: shop_user_service
+    build: ./shop_user_service
+    command: >
+      sh -c "go install github.com/air-verse/air@v1.52.2 &&
+             air"
+    env_file:
+      - ./shop_user_service/.env
+    volumes:
+      - ./shop_user_service/app/:/code/shop_user_service/
+    ports:
+      - 7008:7008
+
   shop_order_service:
     container_name: shop_order_service
     hostname: shop_order_service
@@ -55,18 +70,20 @@ services:
     ports:
       - 7009:7009
 
-  shop_user_service:
-    container_name: shop_user_service
-    hostname: shop_user_service
-    image: shop_user_service
-    build: ./shop_user_service
+  shop_basket_service:
+    container_name: shop_basket_service
+    hostname: shop_basket_service
+    image: shop_basket_service
+    build: ./shop_basket_service
     command: >
-      sh -c "go install github.com/air-verse/air@v1.52.2 &&
-             air"
+      sh -c " apk update && \
+              apk add --no-cache docker-cli &&
+              go install github.com/air-verse/air@v1.52.2 &&
+              air"
     env_file:
-      - ./shop_user_service/.env
+      - ./shop_basket_service/.env
     volumes:
-      - ./shop_user_service/app/:/code/shop_user_service/
+      - ./shop_basket_service/app/:/code/shop_basket_service/
     ports:
       - 7010:7010
 

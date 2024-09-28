@@ -1,18 +1,25 @@
 "use client";
 import { FormEvent, useEffect, useState } from "react";
 import Button from "../../_atoms/button/Button";
+import { Basket } from "../../_models/basket";
 
-const ProductAddToCardForm = () => {
+const ProductAddToCardForm = ({ productId }: { productId: string }) => {
   const [value, setValue] = useState(1);
+
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const basketID = sessionStorage.getItem("bid");
-    console.log(basketID, e);
+    const target = e.target as HTMLFormElement;
+    const { quantity } = target;
+    const basket = new Basket();
+
+    // if user is not loged in (for now always true) init basket from localStorage
+    basket.initFromLocalStorage()
+    basket.addProduct(productId, parseInt(quantity.value))
   };
 
   useEffect(() => {
     if (value <= 0) {
-      setValue(1)
+      setValue(1);
     }
   }, [value]);
 
@@ -31,6 +38,7 @@ const ProductAddToCardForm = () => {
         </Button>
         <input
           className="w-[50px] text-center"
+          name="quantity"
           value={value}
           onChange={(e) => {
             const v = parseInt(e.target.value);

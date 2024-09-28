@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) HomePage(c echo.Context) error {
-	pageUseCase := usecase.NewPage()
+	pageUseCase := usecase.NewPage(&h.Core.Repository)
 	result, err := pageUseCase.HomePageData()
 	if err != nil {
 		h.Core.ErrorLog.Println(err)

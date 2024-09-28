@@ -10,15 +10,15 @@ import (
 var db *sqlx.DB
 
 type Repository struct {
-	Product  productRepository
-	Category categoryRepository
+	Product  ProductRepository
+	Category CategoryRepository
 }
 
 func New(dbWrapper *sqlx.DB) Repository {
 	db = dbWrapper
 	return Repository{
-		Product:  productRepository{},
-		Category: categoryRepository{},
+		Product:  &productRepository{},
+		Category: &categoryRepository{},
 	}
 }
 

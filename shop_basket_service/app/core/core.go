@@ -6,7 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/andust/shop_order_service/repository"
+	"github.com/andust/shop_basket_service/repository"
+	"github.com/andust/shop_basket_service/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -50,8 +51,12 @@ func (c *Core) initDB(db string) (*mongo.Client, error) {
 }
 
 func (c *Core) InitRepository(databaseName string) error {
+	sbsDB := os.Getenv("SBS_DB")
+	if utils.IsTesting() {
+		sbsDB = os.Getenv("SBS_DB_TEST")
+	}
 	client, err := c.initDB(
-		os.Getenv("SOS_DB"),
+		sbsDB,
 	)
 	if err != nil {
 		return err

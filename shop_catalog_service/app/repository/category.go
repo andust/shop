@@ -6,6 +6,10 @@ import (
 	model "github.com/andust/shop_catalog_service/models"
 )
 
+type CategoryRepository interface {
+	Filter() ([]model.Category, error)
+}
+
 type categoryRepository struct{}
 
 func (c *categoryRepository) Filter() ([]model.Category, error) {

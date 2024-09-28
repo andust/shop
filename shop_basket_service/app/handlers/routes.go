@@ -15,5 +15,5 @@ func (h *Handler) Routes(e *echo.Echo) {
 
 	apiGroup := e.Group("/api/v1")
 
-	apiGroup.GET("/orders", h.OrderList)
+	apiGroup.POST("/add-product", h.BasketsAddProduct)
 }
