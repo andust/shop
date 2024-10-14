@@ -1,36 +1,15 @@
 "use client";
+
 import Image, { StaticImageData } from "next/image";
 
 import S from "react-slick";
 
 import { SLIDE_EFFECT_CLASSES } from "../../_constants/style";
-import { leagueSpartan } from "../../_utils/fonts";
-
-
+import { leagueSpartan } from "../../_constants/font";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-// const caruseleOptions = [
-//   {
-//     head: "Fresh grocery1",
-//     text: "There's you can Buy your all of Grocery Products.",
-//     buttonLink: "/example1",
-//     image: image1,
-//   },
-//   {
-//     head: "Fresh grocery2",
-//     text: "We Provide Fresh and Organic Fruits To Your Door.2",
-//     buttonLink: "/example2",
-//     image: image2,
-//   },
-//   {
-//     head: "Fresh grocery3",
-//     text: "We Provide Fresh and Organic Fruits To Your Door.3",
-//     buttonLink: "/example3",
-//     image: image3,
-//   },
-// ];
 
 export interface CaruseleOption {
   head: string;
@@ -43,12 +22,11 @@ export interface SliderProps {
   options: CaruseleOption[];
 }
 
-
 /**
  * Slider - organism because we use react-slick package
  * @returns JSX.Element
  */
-const Slider = ({options} : SliderProps) => (
+const Slider = ({ options }: SliderProps) => (
   <S
     dots={true}
     adaptiveHeight={true}

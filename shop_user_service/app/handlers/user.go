@@ -5,11 +5,20 @@ import (
 
 	"github.com/andust/shop_user_service/repository"
 	usecase "github.com/andust/shop_user_service/use-case"
+	"github.com/andust/shop_user_service/utils"
 	"github.com/labstack/echo/v4"
 )
 
-func (h *Handler) UsersList(c echo.Context) error {
+func (h *Handler) UserDetail(c echo.Context) error {
+	result, err := h.Core.Repository.UserRepository.FindOne(repository.UserQuery{ID: "669e07427d50a9d7b3034b57"})
+	if err != nil {
+		h.Core.ErrorLog.Println(err)
+		echo.NewHTTPError(http.StatusBadRequest, "get users error")
+	}
+	return c.JSON(http.StatusOK, result)
+}
 
+func (h *Handler) UsersList(c echo.Context) error {
 	result, err := h.Core.Repository.UserRepository.FindOne(repository.UserQuery{ID: "669e07427d50a9d7b3034b57"})
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
@@ -40,9 +49,9 @@ func (h *Handler) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	c.SetCookie(newAccessCookie(result))
+	c.SetCookie(utils.NewAccessCookie(result))
 
-	return c.JSON(http.StatusOK, nil)
+	return c.JSON(http.StatusOK, "logged in")
 }
 
 func (h *Handler) Register(c echo.Context) error {

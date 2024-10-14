@@ -14,7 +14,7 @@ func AdminAuthGuard(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		audience := fmt.Sprint(c.Get("aud"))
 		if !slices.Contains(allRoles, audience) {
-			return echo.NewHTTPError(http.StatusUnauthorized, nil)
+			return echo.NewHTTPError(http.StatusForbidden, nil)
 		}
 		return next(c)
 	}

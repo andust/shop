@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	usecase "github.com/andust/shop_user_service/use-case"
 	"github.com/andust/shop_user_service/utils"
@@ -10,7 +11,7 @@ import (
 
 func (h *Handler) RefreshToken(c echo.Context) error {
 	accessCookie, err := c.Cookie("access")
-	if err != nil {
+	if err != nil || strings.TrimSpace(accessCookie.Value) == "" {
 		return echo.NewHTTPError(http.StatusUnauthorized, nil)
 	}
 
@@ -21,7 +22,7 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, nil)
 	}
 
-	c.SetCookie(newAccessCookie(result))
+	c.SetCookie(utils.NewAccessCookie(result))
 	return c.JSON(http.StatusOK, nil)
 }
 

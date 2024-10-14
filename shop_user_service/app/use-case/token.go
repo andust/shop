@@ -12,6 +12,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+type Token interface {
+	Refres(accessToken string) (string, error)
+}
+
 type token struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
@@ -45,6 +49,7 @@ func (t *token) Refres(accessToken string) (string, error) {
 	}
 
 	// 3. If we don't have any error from verify refresh token then we generate new access token
+	// TODO don't get data from DB just get this from claim
 	user, err := t.UserRepository.FindOne(repository.UserQuery{ID: subId})
 	if err != nil {
 		t.ErrorLog.Println(err)

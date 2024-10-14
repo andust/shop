@@ -1,33 +1,8 @@
-import Button from "../../_atoms/button/Button";
 import { Product } from "../../_models/product";
 import ProductAddToCardForm from "../../_molecules/add-to-card-product-form/ProductAddToCardForm";
 import ProductPrice from "../../_molecules/product-base-display/ProductPrice";
 
 export default async ({ params }: { params: { id: string } }) => {
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // async function onSubmit(event: FormEvent<HTMLFormElement>) {
-  //   event.preventDefault();
-  //   setIsLoading(true); // Set loading to true when the request starts
-
-  //   try {
-  //     const formData = new FormData(event.currentTarget);
-  //     const response = await fetch("/api/submit", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     // Handle response if necessary
-  //     const data = await response.json();
-  //     // ...
-  //   } catch (error) {
-  //     // Handle error if necessary
-  //     console.error(error);
-  //   } finally {
-  //     setIsLoading(false); // Set loading to false when the request completes
-  //   }
-  // }
-
   try {
     const response = await fetch(
       `http://shop_catalog_service:7007/api/v1/products/${params.id}`,
@@ -38,7 +13,7 @@ export default async ({ params }: { params: { id: string } }) => {
     return (
       <section className="container">
         <p>breadcrumbs</p>
-        <div className="flex justify-between">
+        <div className="flex justify-between md:min-h-[450px]">
           <div className="flex-1">Image</div>
           <div className="flex-1">
             <p className="text-slate-600 uppercase mb-0">

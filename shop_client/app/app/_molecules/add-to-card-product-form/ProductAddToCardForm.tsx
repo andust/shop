@@ -1,20 +1,24 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import Button from "../../_atoms/button/Button";
 import { Basket } from "../../_models/basket";
+import { BasketContext } from "../../_context/basketContext";
 
 const ProductAddToCardForm = ({ productId }: { productId: string }) => {
   const [value, setValue] = useState(1);
+  const { setProducts } = useContext(BasketContext);
+  const basket = new Basket();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const target = e.target as HTMLFormElement;
     const { quantity } = target;
-    const basket = new Basket();
 
-    // if user is not loged in (for now always true) init basket from localStorage
-    basket.initFromLocalStorage()
-    basket.addProduct(productId, parseInt(quantity.value))
+    // TODO if user is not loged in (for now always true) init basket from localStorage
+    basket.initFromLocalStorage();
+    basket.addProduct(productId, parseInt(quantity.value));
+
+    setProducts(basket.products);
   };
 
   useEffect(() => {
@@ -22,6 +26,12 @@ const ProductAddToCardForm = ({ productId }: { productId: string }) => {
       setValue(1);
     }
   }, [value]);
+
+  useEffect(() => {
+    // TODO if user is not loged in (for now always true) init basket from localStorage
+    basket.initFromLocalStorage();
+    setProducts(basket.products);
+  }, []);
 
   return (
     <form className="flex space-x-3 justify-between" onSubmit={onSubmit}>

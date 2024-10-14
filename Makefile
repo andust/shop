@@ -44,4 +44,8 @@ user-build: user-build-api user-build-scripts
 
 # ALL
 build-api: catalog-build-api user-build-api
-	@echo "build all services"
+	@echo "build all services api"
+
+# ALL
+build-script: catalog-build-scripts user-build-scripts
+	@echo "build all services scripts"

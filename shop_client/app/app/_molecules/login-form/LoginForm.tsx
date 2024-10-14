@@ -1,26 +1,34 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import Input from "../../_atoms/input/Input";
+import { useRouter } from 'next/navigation'
+import { toast } from "react-toastify";
 
-export default function LoginForm() {
+import Input from "../../_atoms/input/Input";
+import Button from "../../_atoms/button/Button";
+
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter()
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
+
     try {
-      const res = await fetch(
-        "http://localhost:7008/api/v1/login",
-        { cache: "no-cache", headers: { "Content-Type": "application/json" }, method: "post", body: JSON.stringify({ email, password}) },
-      );
-      const sss = await res.json();
-      console.log(sss);
-      
-    } catch (error) {
-      
-    }
+      const res = await fetch(`/api/login`, {
+        cache: "no-cache",
+        headers: { "Content-Type": "application/json" },
+        method: "post",
+        body: JSON.stringify({ email, password }),
+      });
+      const resData = await res.json();
+      if (res.ok) {
+        router.push("/account")
+      } else {
+        toast.error(resData.message);
+      }
+    } catch {}
   };
 
   const onChangeHandler = (e: FormEvent<HTMLInputElement>) => {
@@ -32,7 +40,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={onSubmitHandler}>
+    <form className="space-y-5" onSubmit={onSubmitHandler}>
       <label>
         <small className="text-slate-500">Email</small>
         <Input
@@ -52,7 +60,11 @@ export default function LoginForm() {
           placeholder="password"
         />
       </label>
-      <button type="submit">Submit</button>
+      <div className="flex justify-end">
+        <Button type="submit">Submit</Button>
+      </div>
     </form>
   );
-}
+};
+
+export default LoginForm;

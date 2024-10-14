@@ -1,6 +1,6 @@
 import { ChildrenProp, ClassNameProp } from "../../types";
 
-interface HeadlineProps extends ChildrenProp, ClassNameProp {
+interface Props extends ChildrenProp, ClassNameProp {
   level?: number;
   isBold?: boolean;
 }
@@ -10,7 +10,7 @@ export default function Headline({
   className = "",
   isBold = false,
   children,
-}: HeadlineProps) {
+}: Props) {
   const extraClassName: string[] = [];
   if (isBold) {
     extraClassName.push(" font-bold");

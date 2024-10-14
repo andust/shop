@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import Headline from "./_atoms/headline/Headline";
 import FadeWrapper from "./_atoms/fade-wrapper/FadeWrapper";
 import HeroServices from "./_molecules/hero-services/HeroServices";
 import ProductBaseDisplay from "./_molecules/product-base-display/ProductBaseDisplay";
@@ -17,8 +18,7 @@ import cShopImg3 from "./_assets/img/c-shop-img-3.webp";
 import image1 from "./_assets/img/hero-img-1.webp";
 import image2 from "./_assets/img/hero-img-2.webp";
 import image3 from "./_assets/img/hero-img-3.webp";
-import Headline from "./_atoms/Headline/Headline";
-import Footer from "./_organisms/Footer/Footer";
+
 
 const SLIDER_OPTIONS = [
   {
@@ -179,7 +179,6 @@ export default async function Home() {
           </div>
         </section>
       </FadeWrapper>
-      <Footer />
     </div>
   );
 }

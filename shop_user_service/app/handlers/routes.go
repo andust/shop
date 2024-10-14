@@ -23,7 +23,10 @@ func (h *Handler) Routes(e *echo.Echo) {
 	apiGroup.GET("/token/verify", h.VerifyToken)
 	apiGroup.GET("/token/refresh", h.RefreshToken)
 
-	apiGroup.Use(middlewares.AuthMiddleware)
+	authMiddleware := middlewares.AuthMiddleware{}
 
+	apiGroup.Use(authMiddleware.IsLoggedIn)
+
+	apiGroup.GET("/user", guard.AdminAuthGuard(h.UserDetail))
 	apiGroup.GET("/users", guard.AdminAuthGuard(h.UsersList))
 }

@@ -34,6 +34,16 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 	})
 }
 
+func ShouldTokenRefresh(tokenError error) bool {
+	if ve, ok := tokenError.(*jwt.ValidationError); ok {
+		if ve.Errors&jwt.ValidationErrorExpired != 0 {
+			return true
+		}
+	}
+
+	return false
+}
+
 func GetClaim(token *jwt.Token) (jwt.MapClaims, bool) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		return claims, ok

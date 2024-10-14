@@ -1,0 +1,1 @@
+export const USER_SERIVCE = process.env.NEXT_PUBLIC_USER_SERIVCE;
