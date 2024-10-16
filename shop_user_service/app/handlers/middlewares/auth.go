@@ -21,7 +21,7 @@ func (a AuthMiddleware) IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusUnauthorized, nil)
 		}
 		if claims, ok := utils.GetClaim(token); ok {
-			c.Set("subId", claims["subId"])
+			c.Set("userID", claims["userID"])
 			c.Set("aud", claims["aud"])
 		}
 

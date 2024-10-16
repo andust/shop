@@ -1,17 +1,18 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
 import { headerCookies } from "./app/_utils/cookie";
 
 export async function middleware(request: NextRequest) {
   const access = cookies().get("access")?.value ?? "";
-  
+
   if (!access.trim()) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
   try {
     const tokenVerifyResponse = await fetch(
-      "http://shop_user_service:7008/api/v1/token/verify",
+      `${process.env.USER_SERIVCE}/api/v1/token/verify`,
       {
         method: "GET",
         cache: "no-cache",
@@ -25,7 +26,7 @@ export async function middleware(request: NextRequest) {
     }
 
     const refreshResponse = await fetch(
-      `http://shop_user_service:7008/api/v1/token/refresh`,
+      `${process.env.USER_SERIVCE}/api/v1/token/refresh`,
       {
         cache: "no-cache",
         headers: {
@@ -36,7 +37,6 @@ export async function middleware(request: NextRequest) {
     );
     if (refreshResponse.ok) {
       const response = NextResponse.next();
-      
       response.cookies.set({
         name: "access",
         value: headerCookies(refreshResponse.headers).access,

@@ -12,7 +12,7 @@ import (
 )
 
 var requestProductListCounter = promauto.NewCounter(prometheus.CounterOpts{
-	Name: "echo_product_list_requests_total",
+	Name: "catalog_product_list_requests_total",
 	Help: "Total number of requests for product list received",
 })
 

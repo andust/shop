@@ -29,7 +29,7 @@ func serve(c *core.Core) {
 	h := handlers.Handler{Core: c}
 	h.Routes(e)
 
-	p := prometheus.NewPrometheus("echo", nil)
+	p := prometheus.NewPrometheus("catalog_service", nil)
 
 	p.Use(e)
 

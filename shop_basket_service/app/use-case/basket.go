@@ -26,6 +26,8 @@ func (b *basket) SynchronizeBasket(products []model.Product) (*model.Basket, err
 	if err != nil {
 		return nil, err
 	}
+
+	// TODO finish this if necessary
 	fmt.Println(dbBasket)
 
 	return nil, nil

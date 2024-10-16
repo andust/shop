@@ -1,16 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from 'next/navigation'
+import { FormEvent, useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 import Input from "../../_atoms/input/Input";
 import Button from "../../_atoms/button/Button";
+import { UserContext } from "../../_context/userContext";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter()
+  const { setUser } = useContext(UserContext);
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,9 +22,11 @@ const LoginForm = () => {
         method: "post",
         body: JSON.stringify({ email, password }),
       });
+      
       const resData = await res.json();
       if (res.ok) {
-        router.push("/account")
+        setUser(resData)
+        window.location.href = "/account"
       } else {
         toast.error(resData.message);
       }

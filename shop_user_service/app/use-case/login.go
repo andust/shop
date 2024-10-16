@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/andust/shop_user_service/constants"
+	model "github.com/andust/shop_user_service/models"
 	"github.com/andust/shop_user_service/repository"
 	"github.com/andust/shop_user_service/utils"
 	"github.com/redis/go-redis/v9"
@@ -16,6 +17,7 @@ type login struct {
 	ErrorLog       *log.Logger
 	UserRepository repository.UserRepository
 	RedisClient    *redis.Client
+	User           *model.User
 }
 
 func NewLogin(logger *log.Logger, userRepository repository.UserRepository, redis *redis.Client) login {
@@ -41,7 +43,7 @@ func (l *login) Base(email, password string) (string, error) {
 			return "", errors.New("unexpected error, please try again")
 		}
 		l.RedisClient.Set(context.Background(), user.ID, refreshToken, constants.REFRESH_TOKEN_EXP)
-
+		l.User = user
 		return accessToken, nil
 	}
 

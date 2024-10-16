@@ -37,8 +37,8 @@ func (t *token) Refres(accessToken string) (string, error) {
 	}
 
 	// 2. pick and verify user refresh token
-	subId := fmt.Sprint(claim["subId"])
-	refreshToken, err := t.RedisClient.Get(context.Background(), subId).Result()
+	userID := fmt.Sprint(claim["userID"])
+	refreshToken, err := t.RedisClient.Get(context.Background(), userID).Result()
 	if err != nil {
 		return "", baseError
 	}
@@ -50,7 +50,7 @@ func (t *token) Refres(accessToken string) (string, error) {
 
 	// 3. If we don't have any error from verify refresh token then we generate new access token
 	// TODO don't get data from DB just get this from claim
-	user, err := t.UserRepository.FindOne(repository.UserQuery{ID: subId})
+	user, err := t.UserRepository.FindOne(repository.UserQuery{ID: userID})
 	if err != nil {
 		t.ErrorLog.Println(err)
 		return "", baseError

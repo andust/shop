@@ -5,3 +5,4 @@ scrape_configs:
    static_configs:
     - targets:
        - shop_catalog_service:7007
+       - shop_user_service:7008

@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/andust/shop_user_service/libs"
 	"github.com/andust/shop_user_service/repository"
 	usecase "github.com/andust/shop_user_service/use-case"
 	"github.com/andust/shop_user_service/utils"
@@ -10,7 +12,11 @@ import (
 )
 
 func (h *Handler) UserDetail(c echo.Context) error {
-	result, err := h.Core.Repository.UserRepository.FindOne(repository.UserQuery{ID: "669e07427d50a9d7b3034b57"})
+	userId := c.Get("userID")
+	if userId == "" {
+		return c.JSON(http.StatusBadRequest, "no user found")
+	}
+	result, err := h.Core.Repository.UserRepository.FindOne(repository.UserQuery{ID: fmt.Sprint(userId)})
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
 		echo.NewHTTPError(http.StatusBadRequest, "get users error")
@@ -19,7 +25,11 @@ func (h *Handler) UserDetail(c echo.Context) error {
 }
 
 func (h *Handler) UsersList(c echo.Context) error {
-	result, err := h.Core.Repository.UserRepository.FindOne(repository.UserQuery{ID: "669e07427d50a9d7b3034b57"})
+	userId := c.Get("userID")
+	if userId == "" {
+		return c.JSON(http.StatusBadRequest, "no user found")
+	}
+	result, err := h.Core.Repository.UserRepository.FindOne(repository.UserQuery{ID: fmt.Sprint(userId)})
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
 		echo.NewHTTPError(http.StatusBadRequest, "get users error")
@@ -50,8 +60,19 @@ func (h *Handler) Login(c echo.Context) error {
 	}
 
 	c.SetCookie(utils.NewAccessCookie(result))
+	libs.LoginCounter.Inc()
+	return c.JSON(http.StatusOK, loginUseCase.User)
+}
 
-	return c.JSON(http.StatusOK, "logged in")
+func (h *Handler) Logout(c echo.Context) error {
+	userId := c.Get("userID")
+	if userId == "" {
+		return c.JSON(http.StatusBadRequest, "logged out error")
+	}
+	logoutUseCase := usecase.NewLogout(h.Core.RedisClient)
+	logoutUseCase.Base(fmt.Sprint(userId))
+	c.SetCookie(utils.NewAccessCookie(""))
+	return c.JSON(http.StatusOK, "logged out")
 }
 
 func (h *Handler) Register(c echo.Context) error {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/andust/shop_user_service/libs"
 	usecase "github.com/andust/shop_user_service/use-case"
 	"github.com/andust/shop_user_service/utils"
 	"github.com/labstack/echo/v4"
@@ -11,6 +12,7 @@ import (
 
 func (h *Handler) RefreshToken(c echo.Context) error {
 	accessCookie, err := c.Cookie("access")
+	libs.RefreshTokenCounter.Inc()
 	if err != nil || strings.TrimSpace(accessCookie.Value) == "" {
 		return echo.NewHTTPError(http.StatusUnauthorized, nil)
 	}
@@ -28,11 +30,12 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 
 func (h *Handler) VerifyToken(c echo.Context) error {
 	accessCookie, err := c.Cookie("access")
+
+	libs.VerifyTokenCounter.Inc()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "no token to verify")
 	}
 	_, err = utils.VerifyToken(accessCookie.Value)
-
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "verify token error")
 	}

@@ -1,9 +1,12 @@
 import { ChildrenProp, ClassNameProp } from "../../types";
 
-interface Props extends ChildrenProp, ClassNameProp {
+export interface ThemeProp {
+  theme?: "base" | "primary";
+}
+
+interface Props extends ChildrenProp, ClassNameProp, ThemeProp {
   type?: "button" | "submit" | "reset";
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  theme?: "base" | "primary";
 }
 
 const THEME_CLASSNAMES = {
