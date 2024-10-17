@@ -24,6 +24,8 @@ func serve(c *core.Core) {
 
 	c.InitRepository()
 	defer repository.CloseDB()
+	c.InitNats()
+	defer c.NC.Close()
 
 	e := echo.New()
 	h := handlers.Handler{Core: c}

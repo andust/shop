@@ -18,6 +18,8 @@ func serve(c *core.Core) {
 	c.InfoLog.Println("start server")
 
 	c.InitRepository(os.Getenv("DB_NAME"))
+	c.InitNats()
+	defer c.NC.Close()
 
 	e := echo.New()
 	h := handlers.Handler{Core: c}

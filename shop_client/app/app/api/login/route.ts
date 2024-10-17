@@ -12,10 +12,12 @@ export async function POST(req: Request, res: Response) {
     });
 
     if (res.ok) {
+      const oneDay = 24 * 60 * 60 * 1000;
       cookies().set({
         name: "access",
         value: headerCookies(res.headers).access,
         httpOnly: true,
+        expires: Date.now() + oneDay,
         path: "/",
       });
       return Response.json(await res.json(), { status: 200 });

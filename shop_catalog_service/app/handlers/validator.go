@@ -47,6 +47,5 @@ func msgForTag(fe validator.FieldError) string {
 	case "min":
 		return fmt.Sprintf("minimum value %s", fe.Param())
 	}
-
 	return "unexpected validation error"
 }

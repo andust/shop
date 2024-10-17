@@ -21,6 +21,13 @@ type Basket struct {
 	CreatedAt     time.Time    `json:"createdAt"`
 }
 
+type Product struct {
+	ID       string    `json:"id" bson:"_id,omitempty"`
+	Price    float32   `json:"price" bson:"price"`
+	Quantity int       `json:"quantity" bson:"quantity"`
+	AddedAt  time.Time `json:"addedAt"`
+}
+
 func (b *Basket) TotalProductsQuantity() int {
 	var result int
 	for _, product := range b.Products {

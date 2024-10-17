@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/andust/shop_basket_service/repository"
+	"github.com/andust/shop_basket_service/subscriber"
 	"github.com/andust/shop_basket_service/utils"
+	"github.com/nats-io/nats.go"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -23,6 +25,7 @@ type Core struct {
 	InfoLog    *log.Logger
 	ErrorLog   *log.Logger
 	Repository repository.Repository
+	NC         *nats.Conn
 }
 
 func New() *Core {
@@ -31,6 +34,22 @@ func New() *Core {
 		ErrorLog: log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
 	}
 }
+
+func (c *Core) InitNats() {
+	nc, err := nats.Connect("nats://nats:4222")
+	if err != nil {
+		c.ErrorLog.Fatal("nats connection error:", err)
+	}
+
+	c.NC = nc
+	c.initSubscribers(nc)
+}
+
+func (c *Core) initSubscribers(nc *nats.Conn) {
+	subscriber := subscriber.NewSubscriber(nc)
+	subscriber.ProductToBasket()
+}
+
 func (c *Core) initDB(db string) (*mongo.Client, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

@@ -7,6 +7,7 @@ import (
 
 	"github.com/andust/shop_catalog_service/repository"
 	"github.com/jmoiron/sqlx"
+	"github.com/nats-io/nats.go"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 
@@ -20,6 +21,7 @@ type Core struct {
 	InfoLog    *log.Logger
 	ErrorLog   *log.Logger
 	Repository repository.Repository
+	NC         *nats.Conn
 }
 
 func New() *Core {
@@ -27,6 +29,15 @@ func New() *Core {
 		InfoLog:  log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime),
 		ErrorLog: log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile),
 	}
+}
+
+func (c *Core) InitNats() {
+	nc, err := nats.Connect("nats://nats:4222")
+	if err != nil {
+		c.ErrorLog.Fatal("nats connection error:", err)
+	}
+
+	c.NC = nc
 }
 
 func (c *Core) InitRepository() {
