@@ -35,6 +35,7 @@ const ProductByCategorySearchForm = ({
         <Select
           placeholder="All categories"
           options={options}
+          instanceId={1}
           name="categories"
           value={options.find(({ value }) => {
 

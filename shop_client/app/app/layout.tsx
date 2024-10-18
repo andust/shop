@@ -6,6 +6,7 @@ import "./globals.css";
 import "./_assets/icons.css";
 
 import Providers from "./providers";
+import { LoadUser } from "./_context/userContext";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -21,7 +22,9 @@ export default async function RootLayout({
     <html lang="en" className={inter.className}>
       <body>
         <Providers>
-          <main>{children}</main>
+          <LoadUser>
+            <main>{children}</main>
+          </LoadUser>
         </Providers>
       </body>
     </html>
