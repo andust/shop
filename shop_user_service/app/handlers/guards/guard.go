@@ -12,8 +12,8 @@ import (
 func AdminAuthGuard(next echo.HandlerFunc) echo.HandlerFunc {
 	allRoles := []string{string(model.SuperAdminRole), string(model.AdminRole)}
 	return func(c echo.Context) error {
-		audience := fmt.Sprint(c.Get("aud"))
-		if !slices.Contains(allRoles, audience) {
+		role := fmt.Sprint(c.Get("role"))
+		if !slices.Contains(allRoles, role) {
 			return echo.NewHTTPError(http.StatusForbidden, nil)
 		}
 		return next(c)

@@ -35,4 +35,5 @@ func (h *Handler) Routes(e *echo.Echo) {
 	apiGroup.GET("/products/:id", h.ProductDetail)
 
 	apiGroup.GET("/categories", h.CategoryList)
+	apiGroup.POST("/basket/add-product", h.ProductToBasket)
 }

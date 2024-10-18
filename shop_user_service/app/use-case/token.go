@@ -37,7 +37,7 @@ func (t *token) Refres(accessToken string) (string, error) {
 	}
 
 	// 2. pick and verify user refresh token
-	userID := fmt.Sprint(claim["userID"])
+	userID := fmt.Sprint(claim["id"])
 	refreshToken, err := t.RedisClient.Get(context.Background(), userID).Result()
 	if err != nil {
 		return "", baseError

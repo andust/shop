@@ -1,14 +1,16 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 import { headerCookies } from "./app/_utils/cookie";
 
-export async function middleware(request: NextRequest) {
+export async function middleware() {
+  const unauthorizedResponse = new NextResponse("Unauthorized", {
+    status: 401,
+  });
   const access = cookies().get("access")?.value ?? "";
 
   if (!access.trim()) {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+    return unauthorizedResponse;
   }
   try {
     const tokenVerifyResponse = await fetch(
@@ -46,12 +48,12 @@ export async function middleware(request: NextRequest) {
 
       return response;
     }
-    return NextResponse.redirect(new URL("/auth/login", request.url));
   } catch (error) {
-    return NextResponse.redirect(new URL("/", request.url));
+    console.error(error);
   }
+  return unauthorizedResponse;
 }
 
 export const config = {
-  matcher: "/account",
+  matcher: ["/account", "/api/basket/add-product"],
 };

@@ -17,10 +17,10 @@ func GenerateJWT(user model.User, exp time.Duration) (string, error) {
 		return "", errors.New("invalid secret key")
 	}
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
-		"userID": user.ID,
+		"id": user.ID,
 		"email":  user.Email,
 		"iss":    "user service",
-		"aud":    user.Role,
+		"role":    user.Role,
 		"exp":    time.Now().Add(exp).Unix(),
 		"iat":    time.Now().Unix(),
 	})

@@ -33,10 +33,10 @@ func Test_GenerateJWT(t *testing.T) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	assert.True(t, ok, "Expected claims to be of type jwt.MapClaims")
-	assert.Equal(t, user.ID, claims["userID"], "Expected user ID to be in claims")
+	assert.Equal(t, user.ID, claims["id"], "Expected user ID to be in claims")
 	assert.Equal(t, user.Email, claims["email"], "Expected user email to be in claims")
 	assert.Equal(t, "user service", claims["iss"], "Expected issuer to be 'user service'")
-	assert.Equal(t, string(model.SuperAdminRole), claims["aud"], "Expected audience to be user role (super-admin)")
+	assert.Equal(t, string(model.SuperAdminRole), claims["role"], "Expected audience to be user role (super-admin)")
 	assert.WithinDuration(t, time.Now().Add(expiredDuration), time.Unix(int64(claims["exp"].(float64)), 0), time.Second, "Expected expiration time to be within the set duration")
 	assert.WithinDuration(t, time.Now(), time.Unix(int64(claims["iat"].(float64)), 0), time.Second, "Expected issued at time to be current time")
 }

@@ -12,7 +12,7 @@ import (
 )
 
 func (h *Handler) UserDetail(c echo.Context) error {
-	userId := c.Get("userID")
+	userId := c.Get("id")
 	if userId == "" {
 		return c.JSON(http.StatusBadRequest, "no user found")
 	}
@@ -25,7 +25,7 @@ func (h *Handler) UserDetail(c echo.Context) error {
 }
 
 func (h *Handler) UsersList(c echo.Context) error {
-	userId := c.Get("userID")
+	userId := c.Get("id")
 	if userId == "" {
 		return c.JSON(http.StatusBadRequest, "no user found")
 	}
@@ -65,7 +65,7 @@ func (h *Handler) Login(c echo.Context) error {
 }
 
 func (h *Handler) Logout(c echo.Context) error {
-	userId := c.Get("userID")
+	userId := c.Get("id")
 	if userId == "" {
 		return c.JSON(http.StatusBadRequest, "logged out error")
 	}
