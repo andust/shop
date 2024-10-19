@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { headerCookies } from "./app/_utils/cookie";
+import { getValidToken } from "./app/_utils/fetch";
 
 export async function middleware() {
   const unauthorizedResponse = new NextResponse("Unauthorized", {
@@ -13,41 +13,28 @@ export async function middleware() {
     return unauthorizedResponse;
   }
   try {
-    const tokenVerifyResponse = await fetch(
-      `${process.env.USER_SERIVCE}/api/v1/token/verify`,
-      {
-        method: "GET",
-        cache: "no-cache",
-        headers: {
-          Cookie: `access=${access}`,
-        },
-      },
-    );
-    if (tokenVerifyResponse.ok) {
-      return NextResponse.next();
-    }
+    const { validAccess, isFresh } = await getValidToken(access);
 
-    const refreshResponse = await fetch(
-      `${process.env.USER_SERIVCE}/api/v1/token/refresh`,
-      {
-        cache: "no-cache",
-        headers: {
-          Cookie: `access=${access}`,
-        },
-        method: "get",
-      },
-    );
-    if (refreshResponse.ok) {
+    if (!isFresh) {
       const response = NextResponse.next();
       response.cookies.set({
         name: "access",
-        value: headerCookies(refreshResponse.headers).access,
+        value: validAccess,
         maxAge: 24 * 60 * 60,
         httpOnly: true,
       });
-
       return response;
     }
+
+    const response = NextResponse.next();
+    response.cookies.set({
+      name: "access",
+      value: validAccess,
+      maxAge: 24 * 60 * 60,
+      httpOnly: true,
+    });
+
+    return response;
   } catch (error) {
     console.error(error);
   }
@@ -55,5 +42,5 @@ export async function middleware() {
 }
 
 export const config = {
-  matcher: ["/account", "/api/basket/add-product"],
+  matcher: ["/api/account/:path*", "/account", "/api/basket/add-product"],
 };

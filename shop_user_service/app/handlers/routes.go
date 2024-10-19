@@ -28,6 +28,6 @@ func (h *Handler) Routes(e *echo.Echo) {
 	apiGroup.Use(authMiddleware.IsLoggedIn)
 
 	apiGroup.GET("/logout", h.Logout)
-	apiGroup.GET("/user", guard.AdminAuthGuard(h.UserDetail))
+	apiGroup.GET("/user", h.UserDetail)
 	apiGroup.GET("/users", guard.AdminAuthGuard(h.UsersList))
 }
