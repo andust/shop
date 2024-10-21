@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { headerCookies } from "../../_utils/cookie";
+import { cookies } from 'next/headers'
 
 export async function GET(req: Request, res: Response) {
   try {
-    const access = headerCookies(req.headers).access;
+    const access = cookies().get("access")?.value;
 
     const userResponse = await fetch(
       `${process.env.USER_SERIVCE}/api/v1/user`,
@@ -18,7 +18,7 @@ export async function GET(req: Request, res: Response) {
     );
 
     if (userResponse.ok) {
-      return NextResponse.json(await userResponse.json());
+      return NextResponse.json(await userResponse.json())
     }
   } catch (error) {
     console.error(error);

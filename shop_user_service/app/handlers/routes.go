@@ -23,7 +23,11 @@ func (h *Handler) Routes(e *echo.Echo) {
 	apiGroup.GET("/token/verify", h.VerifyToken)
 	apiGroup.GET("/token/refresh", h.RefreshToken)
 
-	authMiddleware := middlewares.AuthMiddleware{}
+	authMiddleware := middlewares.AuthMiddleware{
+		ErrorLog:       h.Core.ErrorLog,
+		UserRepository: h.Core.Repository.UserRepository,
+		RedisClient:    h.Core.RedisClient,
+	}
 
 	apiGroup.Use(authMiddleware.IsLoggedIn)
 

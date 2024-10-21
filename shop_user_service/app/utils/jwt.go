@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/andust/shop_user_service/libs"
 	model "github.com/andust/shop_user_service/models"
 	"github.com/golang-jwt/jwt"
 )
@@ -29,6 +30,7 @@ func GenerateJWT(user model.User, exp time.Duration) (string, error) {
 }
 
 func VerifyToken(tokenString string) (*jwt.Token, error) {
+	libs.VerifyTokenCounter.Inc()
 	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		return []byte(os.Getenv("SECRET_KEY")), nil
 	})

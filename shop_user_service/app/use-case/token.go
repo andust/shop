@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/andust/shop_user_service/constants"
+	"github.com/andust/shop_user_service/libs"
 	"github.com/andust/shop_user_service/repository"
 	"github.com/andust/shop_user_service/utils"
 	"github.com/redis/go-redis/v9"
@@ -27,8 +28,8 @@ func NewToken(logger *log.Logger, userRepository repository.UserRepository, redi
 }
 
 func (t *token) Refres(accessToken string) (string, error) {
+	libs.RefreshTokenCounter.Inc()
 	baseError := errors.New("refresh token error")
-
 	// 1. get token struct and it's claim (need user id)
 	token, _ := utils.VerifyToken(accessToken)
 	claim, ok := utils.GetClaim(token)

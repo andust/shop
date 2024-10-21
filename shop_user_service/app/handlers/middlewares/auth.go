@@ -1,13 +1,22 @@
 package middlewares
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/andust/shop_user_service/repository"
+	usecase "github.com/andust/shop_user_service/use-case"
 	"github.com/andust/shop_user_service/utils"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
+	"github.com/redis/go-redis/v9"
 )
 
-type AuthMiddleware struct{}
+type AuthMiddleware struct {
+	ErrorLog       *log.Logger
+	UserRepository repository.UserRepository
+	RedisClient    *redis.Client
+}
 
 func (a AuthMiddleware) IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -17,7 +26,23 @@ func (a AuthMiddleware) IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		token, err := utils.VerifyToken(access.Value)
-		if err != nil {
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			if ve.Errors&jwt.ValidationErrorExpired != 0 {
+				tokenUseCase := usecase.NewToken(a.ErrorLog, a.UserRepository, a.RedisClient)
+				result, err := tokenUseCase.Refres(access.Value)
+				if err != nil {
+					a.ErrorLog.Println(err)
+					c.SetCookie(utils.RemoveAccessCookie())
+					return echo.NewHTTPError(http.StatusUnauthorized, nil)
+				}
+
+				c.SetCookie(utils.NewAccessCookie(result))
+				if claims, ok := utils.GetClaim(token); ok {
+					c.Set("id", claims["id"])
+					c.Set("role", claims["role"])
+				}
+				return next(c)
+			}
 			c.SetCookie(utils.RemoveAccessCookie())
 			return echo.NewHTTPError(http.StatusUnauthorized, nil)
 		}
@@ -26,6 +51,7 @@ func (a AuthMiddleware) IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 			c.Set("role", claims["role"])
 		}
 
+		c.SetCookie(utils.NewAccessCookie(access.Value))
 		return next(c)
 	}
 }

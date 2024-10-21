@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { getValidToken } from "./app/_utils/fetch";
+import { getUser } from "./app/_utils/fetch";
+import { headerCookies } from "./app/_utils/cookie";
 
 export async function middleware() {
   const unauthorizedResponse = new NextResponse("Unauthorized", {
@@ -13,41 +14,28 @@ export async function middleware() {
     return unauthorizedResponse;
   }
   try {
-    const { validAccess, isFresh } = await getValidToken(access);
-
-    if (!isFresh) {
+    const userResponse = await getUser(access);
+    
+    if (userResponse.ok) {
       const response = NextResponse.next();
       response.cookies.set({
         name: "access",
-        value: validAccess,
+        value: headerCookies(userResponse.headers).access,
         maxAge: 24 * 60 * 60,
         httpOnly: true,
       });
       return response;
     }
-
-    const response = NextResponse.next();
-    response.cookies.set({
-      name: "access",
-      value: validAccess,
-      maxAge: 24 * 60 * 60,
-      httpOnly: true,
-    });
-
-    return response;
   } catch (error) {
     console.error(error);
   }
-
-  unauthorizedResponse.cookies.set({
-    name: "access",
-    value: "",
-    maxAge: -1,
-    httpOnly: true,
-  });
   return unauthorizedResponse;
 }
 
 export const config = {
-  matcher: ["/api/account/:path*", "/account", "/api/basket/add-product"],
+  matcher: [
+    "/api/account/:path*",
+    "/account",
+    "/api/basket/add-product",
+  ],
 };
