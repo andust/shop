@@ -19,8 +19,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var counts int8
-
 type Core struct {
 	InfoLog    *log.Logger
 	ErrorLog   *log.Logger
@@ -47,7 +45,7 @@ func (c *Core) InitNats() {
 
 func (c *Core) initSubscribers(nc *nats.Conn) {
 	subscriber := subscriber.NewSubscriber(nc)
-	subscriber.ProductToBasket()
+	subscriber.ProductToBasket(c.Repository.BasketRepository)
 }
 
 func (c *Core) initDB(db string) (*mongo.Client, error) {

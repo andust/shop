@@ -1,25 +1,30 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
+	"time"
 
 	internalerrors "github.com/andust/shop_basket_service/internal-errors"
 	"github.com/andust/shop_basket_service/model"
 	"github.com/andust/shop_basket_service/repository"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type basket struct {
-	id               string
 	userId           string
 	BasketRepository repository.BasketRepository
 }
 
-func NewBasket(id, userId string, basketRepository repository.BasketRepository) *basket {
-	return &basket{BasketRepository: basketRepository}
+type Basket interface {
+	AddProduct(product model.Product) (*model.Basket, error)
 }
 
-// If user log in we synchronize/create basket for this user
-func (b *basket) SynchronizeBasket(products []model.Product) (*model.Basket, error) {
+func NewBasket(userId string, basketRepository repository.BasketRepository) *basket {
+	return &basket{userId: userId, BasketRepository: basketRepository}
+}
+
+func (b *basket) SynchronizeBasket(basket model.Basket) (*model.Basket, error) {
 	dbBasket, err := b.BasketRepository.Get(repository.BasketQuery{
 		UserId: b.userId,
 	})
@@ -38,12 +43,27 @@ func (b *basket) AddProduct(product model.Product) (*model.Basket, error) {
 		return nil, internalerrors.ErrMinusQuantity
 	}
 
+	if b.userId == "" {
+		return nil, errors.New("no user")
+	}
+
 	dbBasket, err := b.BasketRepository.Get(repository.BasketQuery{
-		ID:     b.id,
 		UserId: b.userId,
 	})
 	if err != nil {
-		return nil, err
+		if err == mongo.ErrNoDocuments {
+			dbBasket, err = b.BasketRepository.Create(&model.Basket{
+				UserId:    b.userId,
+				CreatedAt: time.Now(),
+			})
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if dbBasket == nil {
+			return nil, err
+		}
 	}
 
 	if len(dbBasket.Products) > 0 {

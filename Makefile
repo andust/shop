@@ -4,8 +4,12 @@ CATALOG_DATABASE = "postgres://$(CATALOG_POSTGRES_USER):$(CATALOG_POSTGRES_PASSW
 
 USER_SERVICE_NAME=shop_user_service
 
+PLAYWRIGHT_NAME=shop_playwright
 
 migration_dir = migrate/migrations/
+
+playwright-test:
+	docker compose run --rm ${PLAYWRIGHT_NAME}
 
 # CATALOG SERVICE
 catalog-build-api:

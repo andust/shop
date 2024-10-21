@@ -18,3 +18,12 @@ type Product struct {
 	Brand            Brand     `json:"brand"`
 	Category         Category  `json:"category"`
 }
+
+type ProductToBasketDTO struct {
+	BasketId  string    `json:"basketId" bson:"_id,omitempty"`
+	UserId    string    `json:"userId" bson:"userId"`
+	ProductId string    `json:"productId" bson:"_id,omitempty"`
+	Price     float32   `json:"price" bson:"price"`
+	Quantity  int       `json:"quantity" bson:"quantity"`
+	AddedAt   time.Time `json:"addedAt"`
+}

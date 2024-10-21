@@ -18,3 +18,7 @@ func newHttpOnlyCookie(name, value, path string, t time.Time) *http.Cookie {
 func NewAccessCookie(value string) *http.Cookie {
 	return newHttpOnlyCookie("access", value, "/", time.Now().Add(24*time.Hour))
 }
+
+func RemoveAccessCookie() *http.Cookie {
+	return newHttpOnlyCookie("access", "", "/", time.Now().Add(-24*time.Hour))
+}

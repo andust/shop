@@ -22,7 +22,6 @@ func newProduct(id string, price float32, quantity int) model.Product {
 
 // go test -timeout 30s -v -run ^Test_BasketUseCaseAddProdcutWithIdAndUserID$ ./use-case
 func Test_BasketUseCaseAddProdcutWithIdAndUserID(t *testing.T) {
-	basketId := "123"
 	userId := "1"
 
 	product1 := newProduct("1", 12.99, 1)
@@ -43,7 +42,6 @@ func Test_BasketUseCaseAddProdcutWithIdAndUserID(t *testing.T) {
 			name: "Add one product to empty basket",
 			GetFcCall: func(q repository.BasketQuery) (*model.Basket, error) {
 				return &model.Basket{
-					ID:     basketId,
 					UserId: userId,
 				}, nil
 			},
@@ -59,7 +57,6 @@ func Test_BasketUseCaseAddProdcutWithIdAndUserID(t *testing.T) {
 			name: "Add next product to basket",
 			GetFcCall: func(q repository.BasketQuery) (*model.Basket, error) {
 				return &model.Basket{
-					ID:     basketId,
 					UserId: userId,
 					Products: []model.Product{
 						product1,
@@ -79,7 +76,6 @@ func Test_BasketUseCaseAddProdcutWithIdAndUserID(t *testing.T) {
 			name: "Insert more product quantity to basket",
 			GetFcCall: func(q repository.BasketQuery) (*model.Basket, error) {
 				return &model.Basket{
-					ID:     basketId,
 					UserId: userId,
 					Products: []model.Product{
 						product1,
@@ -100,7 +96,6 @@ func Test_BasketUseCaseAddProdcutWithIdAndUserID(t *testing.T) {
 			name: "Insert lt 1 product quantity to basket",
 			GetFcCall: func(q repository.BasketQuery) (*model.Basket, error) {
 				return &model.Basket{
-					ID:     basketId,
 					UserId: userId,
 					Products: []model.Product{
 						product1q3,
@@ -126,7 +121,7 @@ func Test_BasketUseCaseAddProdcutWithIdAndUserID(t *testing.T) {
 			GetFn: tt.GetFcCall,
 		}
 
-		basketUseCase := NewBasket(basketId, userId, mBasketRepository)
+		basketUseCase := NewBasket(userId, mBasketRepository)
 
 		basket, err := basketUseCase.AddProduct(tt.addProduct)
 		if tt.isErr {

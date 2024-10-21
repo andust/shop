@@ -19,6 +19,7 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 
 	tokenUseCase := usecase.NewToken(h.Core.ErrorLog, h.Core.Repository.UserRepository, h.Core.RedisClient)
 	result, err := tokenUseCase.Refres(accessCookie.Value)
+
 	if err != nil {
 		h.Core.ErrorLog.Println(err)
 		return echo.NewHTTPError(http.StatusUnauthorized, nil)
@@ -30,7 +31,6 @@ func (h *Handler) RefreshToken(c echo.Context) error {
 
 func (h *Handler) VerifyToken(c echo.Context) error {
 	accessCookie, err := c.Cookie("access")
-
 	libs.VerifyTokenCounter.Inc()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "no token to verify")

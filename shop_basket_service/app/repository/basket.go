@@ -46,6 +46,13 @@ func (b BasketQuery) Filter() bson.D {
 		}
 	}
 
+	if b.UserId != "" {
+		filter = append(filter, bson.E{
+			Key:   "userId",
+			Value: b.UserId,
+		})
+	}
+
 	return filter
 }
 

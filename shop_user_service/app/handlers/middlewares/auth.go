@@ -18,6 +18,7 @@ func (a AuthMiddleware) IsLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 
 		token, err := utils.VerifyToken(access.Value)
 		if err != nil {
+			c.SetCookie(utils.RemoveAccessCookie())
 			return echo.NewHTTPError(http.StatusUnauthorized, nil)
 		}
 		if claims, ok := utils.GetClaim(token); ok {

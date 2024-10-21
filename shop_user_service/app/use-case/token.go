@@ -40,7 +40,7 @@ func (t *token) Refres(accessToken string) (string, error) {
 	userID := fmt.Sprint(claim["id"])
 	refreshToken, err := t.RedisClient.Get(context.Background(), userID).Result()
 	if err != nil {
-		return "", baseError
+		return "", errors.New("logged out")
 	}
 
 	_, err = utils.VerifyToken(refreshToken)

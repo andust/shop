@@ -38,6 +38,13 @@ export async function middleware() {
   } catch (error) {
     console.error(error);
   }
+
+  unauthorizedResponse.cookies.set({
+    name: "access",
+    value: "",
+    maxAge: -1,
+    httpOnly: true,
+  });
   return unauthorizedResponse;
 }
 
