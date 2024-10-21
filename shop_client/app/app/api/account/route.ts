@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { cookies } from 'next/headers'
+import { headerCookies } from "../../_utils/cookie";
 
 export async function GET(req: Request, res: Response) {
   try {
-    const access = cookies().get("access")?.value;
+    const access = headerCookies(req.headers).access ?? "";
 
     const userResponse = await fetch(
       `${process.env.USER_SERIVCE}/api/v1/user`,

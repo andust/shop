@@ -9,7 +9,6 @@ export async function middleware() {
     status: 401,
   });
   const access = cookies().get("access")?.value ?? "";
-
   if (!access.trim()) {
     return unauthorizedResponse;
   }
