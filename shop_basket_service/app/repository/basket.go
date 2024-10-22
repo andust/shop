@@ -16,6 +16,7 @@ type BasketRepository interface {
 	Get(q BasketQuery) (*model.Basket, error)
 	Create(basket *model.Basket) (*model.Basket, error)
 	InsertProdct(product model.Product) (*model.Basket, error)
+	UpdateByUserId(userId string, updateFields map[string]any) error
 }
 
 type basketRepository struct {
@@ -80,13 +81,14 @@ func (b basketRepository) Create(basket *model.Basket) (*model.Basket, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), DB_TIMEOUT)
 	defer cancel()
 
-	ddd, err := b.collection.InsertOne(ctx, basket, &options.InsertOneOptions{})
+	insertedResult, err := b.collection.InsertOne(ctx, basket, &options.InsertOneOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(ddd.InsertedID)
-	fmt.Println(basket)
+	if oid, ok := insertedResult.InsertedID.(primitive.ObjectID); ok {
+		basket.ID = oid.Hex()
+	}
 
 	return basket, nil
 }
@@ -109,4 +111,23 @@ func (b basketRepository) InsertProdct(product model.Product) (*model.Basket, er
 	}
 
 	return &basket, nil
+}
+
+func (b basketRepository) UpdateByUserId(userId string, updateFields map[string]any) error {
+	filter := bson.D{{Key: "userId", Value: userId}}
+
+	update := bson.M{
+		"$set": bson.M{}, // Używamy $set, aby zaktualizować istniejące pola lub dodać nowe
+	}
+
+	for field, value := range updateFields {
+		update["$set"].(bson.M)[field] = value
+	}
+
+	_, err := b.collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return nil
 }

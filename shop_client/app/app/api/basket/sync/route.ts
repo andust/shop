@@ -8,7 +8,7 @@ export async function POST(req: Request, res: Response) {
     data.userID = req.headers.get("x-uid");
 
     const res = await fetch(
-      `${process.env.CATALOG_SERIVCE}/api/v1/basket/add-product`,
+      `${process.env.BASKET_SERIVCE}/api/v1/sync`,
       {
         cache: "no-cache",
         headers: {

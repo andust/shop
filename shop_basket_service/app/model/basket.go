@@ -25,7 +25,7 @@ type Product struct {
 	ID       string    `json:"id" bson:"_id,omitempty"`
 	Price    float32   `json:"price" bson:"price"`
 	Quantity int       `json:"quantity" bson:"quantity"`
-	AddedAt  time.Time `json:"addedAt"`
+	AddedAt  time.Time `json:"addedAt" bson:"addedAt"`
 }
 
 func (b *Basket) TotalProductsQuantity() int {
@@ -37,9 +37,9 @@ func (b *Basket) TotalProductsQuantity() int {
 }
 
 type ProductToBasketDTO struct {
-	UserId    string    `json:"userId" bson:"userId"`
-	ProductId string    `json:"productId" bson:"_id,omitempty"`
-	Price     float32   `json:"price" bson:"price"`
-	Quantity  int       `json:"quantity" bson:"quantity"`
-	AddedAt   time.Time `json:"addedAt"`
+	UserId   string    `json:"userId" bson:"userId"`
+	ID       string    `json:"id" bson:"_id,omitempty"`
+	Price    float32   `json:"price" bson:"price"`
+	Quantity int       `json:"quantity" bson:"quantity"`
+	AddedAt  time.Time `json:"addedAt"`
 }

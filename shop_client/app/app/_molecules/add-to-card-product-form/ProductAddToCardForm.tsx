@@ -6,7 +6,7 @@ import Button from "../../_atoms/button/Button";
 import { BasketContext } from "../../_context/basketContext";
 import { UserContext } from "../../_context/userContext";
 
-const ProductAddToCardForm = ({ productId }: { productId: string }) => {
+const ProductAddToCardForm = ({ productId, price }: { productId: string, price: number }) => {
   const [value, setValue] = useState(1);
   const { addProduct } = useContext(BasketContext);
   const { user } = useContext(UserContext);
@@ -15,7 +15,7 @@ const ProductAddToCardForm = ({ productId }: { productId: string }) => {
     e.preventDefault();
     const target = e.target as HTMLFormElement;
     const { quantity } = target;
-    const inputData = { id: productId, quantity: parseInt(quantity.value) };
+    const inputData = { id: productId, quantity: parseInt(quantity.value), price, addedAt: (new Date()).toJSON() };
 
     if (user?.id) {
       try {

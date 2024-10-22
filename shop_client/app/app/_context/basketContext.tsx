@@ -1,5 +1,5 @@
+"use client";
 import { createContext, useEffect, useState } from "react";
-import moment from "moment";
 
 import { BasketProduct } from "../_models/basket";
 import { BASKET_STORAGE_KEY } from "../_constants/storage";
@@ -27,6 +27,8 @@ export const BasketProvider = ({ children }: ChildrenProp) => {
       products.map((p) => {
         if (p.id === productInBasket.id) {
           p.quantity = product.quantity;
+          p.price = product.price;
+          p.addedAt = (new Date()).toJSON();
         }
 
         return p;
@@ -39,13 +41,12 @@ export const BasketProvider = ({ children }: ChildrenProp) => {
 
   useEffect(() => {
     if (products.length) {
-      const date = moment();
       localStorage.setItem(
         BASKET_STORAGE_KEY,
         JSON.stringify({
           refresh,
           products: products,
-          updatedAt: date.format("D/MM/YYYY h:mm:ss"),
+          updatedAt: (new Date()).toJSON(),
         }),
       );
     }

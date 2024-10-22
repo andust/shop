@@ -17,6 +17,9 @@ export async function middleware() {
     
     if (userResponse.ok) {
       const response = NextResponse.next();
+      const user = await userResponse.json();
+      
+      response.headers.set('x-uid', user.id);
       response.cookies.set({
         name: "access",
         value: headerCookies(userResponse.headers).access,
@@ -36,5 +39,6 @@ export const config = {
     "/api/account/:path*",
     "/account",
     "/api/basket/add-product",
+    "/api/basket/sync",
   ],
 };

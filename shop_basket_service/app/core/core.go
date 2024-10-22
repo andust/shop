@@ -45,7 +45,7 @@ func (c *Core) InitNats() {
 
 func (c *Core) initSubscribers(nc *nats.Conn) {
 	subscriber := subscriber.NewSubscriber(nc)
-	subscriber.ProductToBasket(c.Repository.BasketRepository)
+	subscriber.ProductToBasket(c.Repository.BasketRepository, c.ErrorLog)
 }
 
 func (c *Core) initDB(db string) (*mongo.Client, error) {

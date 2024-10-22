@@ -6,11 +6,14 @@ import { toast } from "react-toastify";
 import Input from "../../_atoms/input/Input";
 import Button from "../../_atoms/button/Button";
 import { UserContext } from "../../_context/userContext";
+import { BasketContext } from "../../_context/basketContext";
+import { syncBasket } from "../../_models/user";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useContext(UserContext);
+  const { products } = useContext(BasketContext);
 
   const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,7 +29,9 @@ const LoginForm = () => {
       const resData = await res.json();
       if (res.ok) {
         setUser(resData)
-        window.location.href = "/account"
+        syncBasket(products).finally(() => {
+          window.location.href = "/account"
+        });
       } else {
         toast.error(resData.message);
       }

@@ -36,7 +36,7 @@ export default async ({ params }: { params: { id: string } }) => {
                 {product.quantityInStock} Products Available
               </span>
             </p>
-            <ProductAddToCardForm productId={product.id} />
+            <ProductAddToCardForm productId={product.id} price={product.price} />
           </div>
         </div>
       </section>
